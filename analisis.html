@@ -1,0 +1,2014 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Patrón - Estrategia 2026</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --patron-black: #1a1a1a;
+            --patron-gold: #c9a227;
+            --patron-gold-light: #e8d5a3;
+            --patron-cream: #faf8f3;
+            --patron-terracotta: #c45c3e;
+            --patron-sage: #7a9e7e;
+            --patron-navy: #2c3e50;
+            --patron-gray: #6b7280;
+            --patron-light-gray: #f3f4f6;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-card: 0 2px 12px rgba(0,0,0,0.06);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--patron-cream);
+            color: var(--patron-black);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--patron-black);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            width: 45px;
+            height: 45px;
+            background: var(--patron-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 1.2rem;
+            color: var(--patron-black);
+        }
+
+        .nav-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--patron-cream);
+            letter-spacing: 1px;
+        }
+
+        .nav-subtitle {
+            font-size: 0.75rem;
+            color: var(--patron-gold);
+            text-transform: uppercase;
+            letter-spacing: 2px;
+        }
+
+        /* Tab Navigation */
+        .tab-nav {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .tab-btn {
+            background: transparent;
+            border: 1px solid rgba(201, 162, 39, 0.3);
+            color: var(--patron-gold-light);
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .tab-btn:hover {
+            background: rgba(201, 162, 39, 0.1);
+        }
+
+        .tab-btn.active {
+            background: var(--patron-gold);
+            color: var(--patron-black);
+            border-color: var(--patron-gold);
+        }
+
+        /* Main Content */
+        .main {
+            padding-top: 90px;
+            padding-bottom: 3rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, var(--patron-black) 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            color: var(--patron-cream);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(201, 162, 39, 0.15) 0%, transparent 70%);
+            border-radius: 50%;
+        }
+
+        .hero-content {
+            position: relative;
+            z-index: 1;
+        }
+
+        .hero-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--patron-gold);
+            margin-bottom: 0.5rem;
+        }
+
+        .hero-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .hero-description {
+            font-size: 1rem;
+            color: rgba(255,255,255,0.8);
+            max-width: 600px;
+            line-height: 1.7;
+        }
+
+        .hero-stats {
+            display: flex;
+            gap: 3rem;
+            margin-top: 2rem;
+            padding-top: 2rem;
+            border-top: 1px solid rgba(255,255,255,0.1);
+        }
+
+        .hero-stat {
+            text-align: left;
+        }
+
+        .hero-stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--patron-gold);
+        }
+
+        .hero-stat-label {
+            font-size: 0.8rem;
+            color: rgba(255,255,255,0.6);
+            margin-top: 0.25rem;
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: var(--patron-gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 0.875rem;
+            color: var(--patron-black);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--patron-black);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 1px;
+            background: linear-gradient(to right, var(--patron-gold), transparent);
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--patron-gold);
+        }
+
+        .kpi-card.highlight::before {
+            background: var(--patron-terracotta);
+        }
+
+        .kpi-card.success::before {
+            background: var(--patron-sage);
+        }
+
+        .kpi-card.alert::before {
+            background: #ef4444;
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--patron-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--patron-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-detail {
+            font-size: 0.875rem;
+            color: var(--patron-gray);
+        }
+
+        .kpi-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            background: rgba(122, 158, 126, 0.15);
+            color: var(--patron-sage);
+        }
+
+        .trend-down {
+            background: rgba(239, 68, 68, 0.15);
+            color: #ef4444;
+        }
+
+        /* Chart Cards */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-grid-equal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-grid-thirds {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--patron-black);
+        }
+
+        .chart-subtitle {
+            font-size: 0.8rem;
+            color: var(--patron-gray);
+            margin-top: 0.25rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .chart-container-small {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Strategy Cards */
+        .strategy-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .strategy-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            border-top: 4px solid var(--patron-gold);
+            transition: var(--transition);
+        }
+
+        .strategy-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .strategy-card.pillar-1 { border-top-color: var(--patron-gold); }
+        .strategy-card.pillar-2 { border-top-color: var(--patron-terracotta); }
+        .strategy-card.pillar-3 { border-top-color: var(--patron-sage); }
+        .strategy-card.pillar-4 { border-top-color: var(--patron-navy); }
+
+        .strategy-icon {
+            width: 48px;
+            height: 48px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .pillar-1 .strategy-icon { background: rgba(201, 162, 39, 0.15); }
+        .pillar-2 .strategy-icon { background: rgba(196, 92, 62, 0.15); }
+        .pillar-3 .strategy-icon { background: rgba(122, 158, 126, 0.15); }
+        .pillar-4 .strategy-icon { background: rgba(44, 62, 80, 0.15); }
+
+        .strategy-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+            color: var(--patron-black);
+        }
+
+        .strategy-desc {
+            font-size: 0.85rem;
+            color: var(--patron-gray);
+            line-height: 1.5;
+            margin-bottom: 1rem;
+        }
+
+        .strategy-metric {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            color: var(--patron-black);
+        }
+
+        .strategy-metric-label {
+            font-size: 0.7rem;
+            color: var(--patron-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        /* Investment Calendar */
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(12, 1fr);
+            gap: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .calendar-month {
+            background: white;
+            border-radius: 8px;
+            padding: 1rem 0.5rem;
+            text-align: center;
+            box-shadow: var(--shadow-card);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .calendar-month:hover {
+            transform: scale(1.05);
+        }
+
+        .calendar-month.high {
+            background: linear-gradient(135deg, #22c55e 0%, #16a34a 100%);
+            color: white;
+        }
+
+        .calendar-month.medium {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: var(--patron-black);
+        }
+
+        .calendar-month.low {
+            background: linear-gradient(135deg, #f87171 0%, #ef4444 100%);
+            color: white;
+        }
+
+        .calendar-month.peak {
+            background: linear-gradient(135deg, var(--patron-gold) 0%, #b8941f 100%);
+            color: var(--patron-black);
+        }
+
+        .month-name {
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .month-index {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin: 0.25rem 0;
+        }
+
+        .month-action {
+            font-size: 0.6rem;
+            opacity: 0.9;
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            overflow-x: auto;
+        }
+
+        .heatmap {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .heatmap th {
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--patron-gray);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .heatmap th:first-child {
+            text-align: left;
+        }
+
+        .heatmap td {
+            padding: 0.6rem 0.5rem;
+            text-align: center;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .heatmap td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: var(--patron-black);
+            background: transparent !important;
+        }
+
+        .heat-very-high { background: #166534; color: white; }
+        .heat-high { background: #22c55e; color: white; }
+        .heat-medium-high { background: #86efac; color: #166534; }
+        .heat-medium { background: #fef9c3; color: #854d0e; }
+        .heat-medium-low { background: #fed7aa; color: #9a3412; }
+        .heat-low { background: #fca5a5; color: #991b1b; }
+        .heat-very-low { background: #ef4444; color: white; }
+
+        /* Action Table */
+        .action-table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        .action-table th {
+            text-align: left;
+            padding: 1rem;
+            background: var(--patron-light-gray);
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--patron-gray);
+        }
+
+        .action-table td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--patron-light-gray);
+            font-size: 0.9rem;
+        }
+
+        .action-table tr:hover td {
+            background: rgba(201, 162, 39, 0.05);
+        }
+
+        .priority-badge {
+            display: inline-block;
+            padding: 0.25rem 0.75rem;
+            border-radius: 20px;
+            font-size: 0.7rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .priority-high {
+            background: rgba(239, 68, 68, 0.15);
+            color: #dc2626;
+        }
+
+        .priority-medium {
+            background: rgba(251, 191, 36, 0.15);
+            color: #d97706;
+        }
+
+        .priority-low {
+            background: rgba(122, 158, 126, 0.15);
+            color: var(--patron-sage);
+        }
+
+        /* Menu Matrix */
+        .menu-quadrant {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            grid-template-rows: 1fr 1fr;
+            gap: 1rem;
+            height: 400px;
+        }
+
+        .quadrant {
+            border-radius: 12px;
+            padding: 1.25rem;
+            position: relative;
+        }
+
+        .quadrant-star {
+            background: linear-gradient(135deg, rgba(34, 197, 94, 0.1) 0%, rgba(22, 163, 74, 0.15) 100%);
+            border: 2px solid #22c55e;
+        }
+
+        .quadrant-puzzle {
+            background: linear-gradient(135deg, rgba(251, 191, 36, 0.1) 0%, rgba(245, 158, 11, 0.15) 100%);
+            border: 2px solid #fbbf24;
+        }
+
+        .quadrant-horse {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.1) 0%, rgba(37, 99, 235, 0.15) 100%);
+            border: 2px solid #3b82f6;
+        }
+
+        .quadrant-dog {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.1) 0%, rgba(220, 38, 38, 0.15) 100%);
+            border: 2px solid #ef4444;
+        }
+
+        .quadrant-title {
+            font-weight: 700;
+            font-size: 0.85rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .quadrant-subtitle {
+            font-size: 0.7rem;
+            color: var(--patron-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .quadrant-items {
+            font-size: 0.8rem;
+            line-height: 1.6;
+        }
+
+        .quadrant-action {
+            position: absolute;
+            bottom: 1rem;
+            right: 1rem;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            font-weight: 600;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            background: rgba(0,0,0,0.05);
+        }
+
+        /* Upsell Scripts */
+        .script-card {
+            background: white;
+            border-radius: 12px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            box-shadow: var(--shadow-card);
+            border-left: 4px solid var(--patron-gold);
+        }
+
+        .script-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .script-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .script-value {
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            color: var(--patron-sage);
+        }
+
+        .script-text {
+            font-size: 0.9rem;
+            color: var(--patron-gray);
+            font-style: italic;
+            background: var(--patron-light-gray);
+            padding: 0.75rem;
+            border-radius: 8px;
+            margin-top: 0.5rem;
+        }
+
+        /* Growth Channel */
+        .channel-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            text-align: center;
+        }
+
+        .channel-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.75rem;
+            margin: 0 auto 1rem;
+        }
+
+        .channel-card.catering .channel-icon {
+            background: linear-gradient(135deg, var(--patron-terracotta) 0%, #a84832 100%);
+        }
+
+        .channel-card.togo .channel-icon {
+            background: linear-gradient(135deg, var(--patron-sage) 0%, #5f7f63 100%);
+        }
+
+        .channel-card.dinein .channel-icon {
+            background: linear-gradient(135deg, var(--patron-gold) 0%, #a8891f 100%);
+        }
+
+        .channel-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .channel-growth {
+            font-size: 2rem;
+            font-weight: 700;
+            margin: 0.5rem 0;
+        }
+
+        .channel-card.catering .channel-growth { color: var(--patron-terracotta); }
+        .channel-card.togo .channel-growth { color: var(--patron-sage); }
+        .channel-card.dinein .channel-growth { color: var(--patron-gold); }
+
+        .channel-desc {
+            font-size: 0.85rem;
+            color: var(--patron-gray);
+            margin-top: 0.5rem;
+        }
+
+        /* Identity Section */
+        .identity-card {
+            background: linear-gradient(135deg, var(--patron-black) 0%, #2d2d2d 100%);
+            border-radius: 20px;
+            padding: 2.5rem;
+            color: var(--patron-cream);
+            text-align: center;
+            margin-bottom: 2rem;
+        }
+
+        .identity-label {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 3px;
+            color: var(--patron-gold);
+            margin-bottom: 1rem;
+        }
+
+        .identity-statement {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 600;
+            max-width: 800px;
+            margin: 0 auto 2rem;
+            line-height: 1.4;
+        }
+
+        .identity-pillars {
+            display: flex;
+            justify-content: center;
+            gap: 3rem;
+            flex-wrap: wrap;
+        }
+
+        .identity-pillar {
+            text-align: center;
+        }
+
+        .identity-pillar-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .identity-pillar-text {
+            font-size: 0.85rem;
+            color: var(--patron-gold-light);
+        }
+
+        /* Legend */
+        .legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--patron-light-gray);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.75rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--patron-gray);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--patron-light-gray);
+            margin-top: 2rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-grid, .strategy-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-grid, .chart-grid-equal, .chart-grid-thirds {
+                grid-template-columns: 1fr;
+            }
+            .calendar-grid {
+                grid-template-columns: repeat(6, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .tab-nav {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .kpi-grid, .strategy-grid {
+                grid-template-columns: 1fr;
+            }
+            .calendar-grid {
+                grid-template-columns: repeat(4, 1fr);
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .main {
+                padding-top: 180px;
+            }
+            .hero-stats {
+                flex-direction: column;
+                gap: 1.5rem;
+            }
+            .menu-quadrant {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <div class="nav-logo">EP</div>
+            <div>
+                <div class="nav-title">El Patrón</div>
+                <div class="nav-subtitle">Plan Estratégico 2026</div>
+            </div>
+        </div>
+        <div class="tab-nav">
+            <button class="tab-btn active" onclick="showTab('overview')">Resumen</button>
+            <button class="tab-btn" onclick="showTab('seasonality')">Estacionalidad</button>
+            <button class="tab-btn" onclick="showTab('growth')">Crecimiento</button>
+            <button class="tab-btn" onclick="showTab('menu')">Menú</button>
+            <button class="tab-btn" onclick="showTab('action')">Plan de Acción</button>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+
+            <!-- TAB 1: OVERVIEW -->
+            <div id="tab-overview" class="tab-content active">
+
+                <!-- Hero -->
+                <div class="hero">
+                    <div class="hero-content">
+                        <div class="hero-label">Visión Estratégica 2026</div>
+                        <h1 class="hero-title">Restaurante Familiar de Comida Mexicana</h1>
+                        <p class="hero-description">
+                            Comida rica, rápida y a buen precio. Un lugar donde las familias vienen a resolver la comida,
+                            tomarse una margarita o cerveza, y pasar un buen rato sin complicaciones.
+                        </p>
+                        <div class="hero-stats">
+                            <div class="hero-stat">
+                                <div class="hero-stat-value">$6.57M</div>
+                                <div class="hero-stat-label">Ventas 36 meses</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="hero-stat-value">$182K</div>
+                                <div class="hero-stat-label">Promedio mensual</div>
+                            </div>
+                            <div class="hero-stat">
+                                <div class="hero-stat-value">4</div>
+                                <div class="hero-stat-label">Pilares de crecimiento</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 4 Pillars -->
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2 class="section-title">Los 4 Pilares de Crecimiento</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="strategy-grid">
+                    <div class="strategy-card pillar-1">
+                        <div class="strategy-icon">📅</div>
+                        <div class="strategy-title">Inversión Inteligente</div>
+                        <div class="strategy-desc">Marketing agresivo en meses lentos (Ene, Sep, Oct). En Mayo: capturar clientes y maximizar ticket, no gastar en ads.</div>
+                        <div class="strategy-metric">+$24K</div>
+                        <div class="strategy-metric-label">Potencial en meses lentos</div>
+                    </div>
+                    <div class="strategy-card pillar-2">
+                        <div class="strategy-icon">🚗</div>
+                        <div class="strategy-title">Catering & ToGo</div>
+                        <div class="strategy-desc">Canales de crecimiento sin límite de capacidad. Lo que más crece en la industria a nivel nacional.</div>
+                        <div class="strategy-metric">+25%</div>
+                        <div class="strategy-metric-label">Crecimiento industria</div>
+                    </div>
+                    <div class="strategy-card pillar-3">
+                        <div class="strategy-icon">💰</div>
+                        <div class="strategy-title">Upselling & Training</div>
+                        <div class="strategy-desc">Subir ticket promedio con cheese dip, margaritas jumbo, postres. Entrenar meseros con scripts específicos.</div>
+                        <div class="strategy-metric">+$2.25</div>
+                        <div class="strategy-metric-label">Por ticket objetivo</div>
+                    </div>
+                    <div class="strategy-card pillar-4">
+                        <div class="strategy-icon">📋</div>
+                        <div class="strategy-title">Menu Engineering</div>
+                        <div class="strategy-desc">Reducir menú, eliminar items de bajo rendimiento, destacar estrellas. Identidad clara: familiar, casual, accesible.</div>
+                        <div class="strategy-metric">-30%</div>
+                        <div class="strategy-metric-label">Items a eliminar</div>
+                    </div>
+                </div>
+
+                <!-- Quick KPIs -->
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Ticket Actual</div>
+                        <div class="kpi-value">$10.25</div>
+                        <div class="kpi-detail">Promedio por persona</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <div class="kpi-label">Ticket Objetivo</div>
+                        <div class="kpi-value">$12.50</div>
+                        <div class="kpi-detail">+22% con upselling <span class="kpi-trend trend-up">↑ Meta</span></div>
+                    </div>
+                    <div class="kpi-card highlight">
+                        <div class="kpi-label">Mejor Mes</div>
+                        <div class="kpi-value">Mayo</div>
+                        <div class="kpi-detail">Cinco de Mayo = Captura + Upsell</div>
+                    </div>
+                    <div class="kpi-card alert">
+                        <div class="kpi-label">Meses Críticos</div>
+                        <div class="kpi-value">Ene/Sep/Oct</div>
+                        <div class="kpi-detail">-11% vs promedio <span class="kpi-trend trend-down">↓ Invertir aquí</span></div>
+                    </div>
+                </div>
+
+                <!-- Revenue Chart -->
+                <div class="chart-grid">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">Tendencia de Ingresos Mensuales</div>
+                                <div class="chart-subtitle">Comparativa 2023 vs 2024 vs 2025</div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="revenueChart"></canvas>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">Distribución por Categoría</div>
+                                <div class="chart-subtitle">% del total de ventas</div>
+                            </div>
+                        </div>
+                        <div class="chart-container">
+                            <canvas id="categoryPieChart"></canvas>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 2: SEASONALITY -->
+            <div id="tab-seasonality" class="tab-content">
+
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2 class="section-title">Calendario de Inversión 2026</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Estrategia de Marketing por Mes</div>
+                            <div class="chart-subtitle">🟢 Invertir fuerte (mesas vacías) | 🟡 Mantener | 🟠 Mayo especial (upsell + captura)</div>
+                        </div>
+                    </div>
+                    <div class="calendar-grid" id="calendarGrid">
+                        <!-- Generated by JS -->
+                    </div>
+                    <div class="legend">
+                        <div class="legend-item"><div class="legend-color" style="background: #22c55e;"></div> Invertir fuerte - Capacidad ociosa</div>
+                        <div class="legend-item"><div class="legend-color" style="background: #fbbf24;"></div> Mantener presencia</div>
+                        <div class="legend-item"><div class="legend-color" style="background: var(--patron-gold);"></div> Mayo: Upsell + Captura (no ads)</div>
+                        <div class="legend-item"><div class="legend-color" style="background: #f87171;"></div> Reducir - Ya hay demanda</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2 class="section-title">Heatmap de Estacionalidad</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Índice de Rendimiento por Categoría y Mes</div>
+                            <div class="chart-subtitle">Base 100 = Promedio de la categoría</div>
+                        </div>
+                    </div>
+                    <div class="heatmap-container">
+                        <table class="heatmap" id="heatmapTable"></table>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2 class="section-title">Estrategia por Temporada</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-grid-thirds">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">🔴 Meses Lentos</div>
+                                <div class="chart-subtitle">Enero, Septiembre, Octubre</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.8;">
+                            <strong>Problema:</strong> -11% vs promedio<br><br>
+                            <strong>Estrategia:</strong><br>
+                            • Marketing agresivo (aquí SÍ invertir)<br>
+                            • Lunch specials $9.99<br>
+                            • Happy Hour extendido<br>
+                            • Game Day specials (Sep)<br>
+                            • Día de Muertos (Oct)<br>
+                            • Email a clientes inactivos<br><br>
+                            <strong style="color: var(--patron-sage);">Meta: +$8K/mes</strong>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">🟡 Meses Normales</div>
+                                <div class="chart-subtitle">Feb, Jul, Ago, Nov, Dic</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.8;">
+                            <strong>Situación:</strong> En promedio<br><br>
+                            <strong>Estrategia:</strong><br>
+                            • Mantener presencia básica<br>
+                            • Eventos específicos:<br>
+                            &nbsp;&nbsp;- San Valentín (Feb)<br>
+                            &nbsp;&nbsp;- 4 de Julio (Jul)<br>
+                            &nbsp;&nbsp;- Holidays (Nov-Dic)<br>
+                            • Focus en upselling<br>
+                            • Catering para fiestas<br><br>
+                            <strong style="color: var(--patron-gold);">Meta: Mantener ticket</strong>
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">🟢 Meses Fuertes</div>
+                                <div class="chart-subtitle">Marzo, Abril, Mayo, Junio</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 1.8;">
+                            <strong>Situación:</strong> +7% a +29% vs promedio<br><br>
+                            <strong>Estrategia:</strong><br>
+                            • Reducir gasto en ads<br>
+                            • Maximizar upselling<br>
+                            • Capturar datos clientes<br>
+                            • Push Catering/ToGo<br>
+                            • Mayo: TODO el equipo<br>
+                            &nbsp;&nbsp;enfocado en upsell<br><br>
+                            <strong style="color: var(--patron-terracotta);">Meta: +$2/ticket</strong>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 3: GROWTH -->
+            <div id="tab-growth" class="tab-content">
+
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2 class="section-title">Canales de Crecimiento</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-grid-thirds">
+                    <div class="channel-card catering">
+                        <div class="channel-icon">🎉</div>
+                        <div class="channel-title">Catering</div>
+                        <div class="channel-growth">+25%</div>
+                        <div class="channel-desc">Crecimiento nacional. Sin límite de capacidad. Eventos corporativos, quinceañeras, graduaciones.</div>
+                    </div>
+                    <div class="channel-card togo">
+                        <div class="channel-icon">📦</div>
+                        <div class="channel-title">ToGo / Pickup</div>
+                        <div class="channel-growth">+18%</div>
+                        <div class="channel-desc">Familias que quieren comida de El Patrón en casa. Paquetes familiares, meal kits.</div>
+                    </div>
+                    <div class="channel-card dinein">
+                        <div class="channel-icon">🍽️</div>
+                        <div class="channel-title">Dine-In</div>
+                        <div class="channel-growth">+$2.25</div>
+                        <div class="channel-desc">Crecimiento vía ticket promedio. Capacidad limitada = optimizar cada mesa.</div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2 class="section-title">Scripts de Upselling para Meseros</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-grid-equal">
+                    <div>
+                        <div class="script-card">
+                            <div class="script-header">
+                                <div class="script-title">🧀 Cheese Dip al Inicio</div>
+                                <div class="script-value">+$7.50/mesa</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--patron-gray);">Ofrecer SIEMPRE al sentarse</div>
+                            <div class="script-text">"¿Empezamos con nuestro famoso cheese dip mientras ven el menú? Es el favorito de la casa."</div>
+                        </div>
+                        <div class="script-card">
+                            <div class="script-header">
+                                <div class="script-title">🍹 Margarita Jumbo</div>
+                                <div class="script-value">+$6/bebida</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--patron-gray);">Upgrade de regular a jumbo</div>
+                            <div class="script-text">"¿La quiere jumbo? Son solo $6 más y es perfecta para compartir o para toda la comida."</div>
+                        </div>
+                        <div class="script-card">
+                            <div class="script-header">
+                                <div class="script-title">🥩 Fajitas Para Dos</div>
+                                <div class="script-value">+$15/mesa</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--patron-gray);">Upgrade de individual a compartir</div>
+                            <div class="script-text">"Las fajitas para dos son espectaculares y mejor valor. Vienen con todo para armar sus tacos."</div>
+                        </div>
+                    </div>
+                    <div>
+                        <div class="script-card">
+                            <div class="script-header">
+                                <div class="script-title">🍰 Postre al Final</div>
+                                <div class="script-value">+$8/mesa</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--patron-gray);">Ofrecer SIEMPRE antes de la cuenta</div>
+                            <div class="script-text">"¿Guardamos espacio para postre? Los churros con cajeta o el tres leches son increíbles."</div>
+                        </div>
+                        <div class="script-card">
+                            <div class="script-header">
+                                <div class="script-title">🌮 Kids Combo</div>
+                                <div class="script-value">+$5/niño</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--patron-gray);">Bundle completo para niños</div>
+                            <div class="script-text">"¿El combo completo para los niños? Incluye bebida y postre, y les encanta."</div>
+                        </div>
+                        <div class="script-card">
+                            <div class="script-header">
+                                <div class="script-title">🍺 Bucket de Cervezas</div>
+                                <div class="script-value">+$10/mesa</div>
+                            </div>
+                            <div style="font-size: 0.85rem; color: var(--patron-gray);">Para grupos y game days</div>
+                            <div class="script-text">"¿Un bucket de cervezas para la mesa? Son 5 por $20, mucho mejor que individual."</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2 class="section-title">Impacto Proyectado</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-container">
+                        <canvas id="impactChart"></canvas>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 4: MENU -->
+            <div id="tab-menu" class="tab-content">
+
+                <!-- Identity -->
+                <div class="identity-card">
+                    <div class="identity-label">Nuestra Identidad</div>
+                    <div class="identity-statement">
+                        "El lugar donde las familias vienen a comer rico, rápido y a buen precio.
+                        Una margarita fría, unos tacos calientes, y listo."
+                    </div>
+                    <div class="identity-pillars">
+                        <div class="identity-pillar">
+                            <div class="identity-pillar-icon">👨‍👩‍👧‍👦</div>
+                            <div class="identity-pillar-text">Familiar</div>
+                        </div>
+                        <div class="identity-pillar">
+                            <div class="identity-pillar-icon">⚡</div>
+                            <div class="identity-pillar-text">Rápido</div>
+                        </div>
+                        <div class="identity-pillar">
+                            <div class="identity-pillar-icon">💵</div>
+                            <div class="identity-pillar-text">Buen Precio</div>
+                        </div>
+                        <div class="identity-pillar">
+                            <div class="identity-pillar-icon">🍹</div>
+                            <div class="identity-pillar-text">Margaritas & Cerveza</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2 class="section-title">Matriz de Menu Engineering</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Clasificación de Productos</div>
+                            <div class="chart-subtitle">Popularidad (ventas) vs Rentabilidad (margen)</div>
+                        </div>
+                    </div>
+                    <div class="menu-quadrant">
+                        <div class="quadrant quadrant-star">
+                            <div class="quadrant-title">⭐ ESTRELLAS</div>
+                            <div class="quadrant-subtitle">Alta popularidad + Alto margen</div>
+                            <div class="quadrant-items">
+                                • Patrón Special<br>
+                                • Fajitas (todas)<br>
+                                • Cheese Dip<br>
+                                • Margaritas Jumbo<br>
+                                • Chimichangas El Patrón
+                            </div>
+                            <div class="quadrant-action">MANTENER Y DESTACAR</div>
+                        </div>
+                        <div class="quadrant quadrant-puzzle">
+                            <div class="quadrant-title">🧩 PUZZLES</div>
+                            <div class="quadrant-subtitle">Baja popularidad + Alto margen</div>
+                            <div class="quadrant-items">
+                                • Seafood (fuera de temporada)<br>
+                                • Vinos<br>
+                                • Postres<br>
+                                • Tequilas premium
+                            </div>
+                            <div class="quadrant-action">PROMOCIONAR MÁS</div>
+                        </div>
+                        <div class="quadrant quadrant-horse">
+                            <div class="quadrant-title">🐴 CABALLOS</div>
+                            <div class="quadrant-subtitle">Alta popularidad + Bajo margen</div>
+                            <div class="quadrant-items">
+                                • Lunch specials<br>
+                                • Combos básicos<br>
+                                • Kids meals<br>
+                                • Soft drinks
+                            </div>
+                            <div class="quadrant-action">SUBIR PRECIO O REDUCIR COSTO</div>
+                        </div>
+                        <div class="quadrant quadrant-dog">
+                            <div class="quadrant-title">🐕 PERROS</div>
+                            <div class="quadrant-subtitle">Baja popularidad + Bajo margen</div>
+                            <div class="quadrant-items">
+                                • Items que nadie pide<br>
+                                • Platos complicados<br>
+                                • Ingredientes únicos<br>
+                                • Vinos de baja rotación
+                            </div>
+                            <div class="quadrant-action">ELIMINAR DEL MENÚ</div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2 class="section-title">Recomendaciones de Menú</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-grid-equal">
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">✅ Mantener y Destacar</div>
+                                <div class="chart-subtitle">Estos items definen El Patrón</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 2;">
+                            <strong>House Specialties</strong> - El corazón del menú<br>
+                            <strong>Fajitas</strong> - Experiencia visual y sabor<br>
+                            <strong>Cheese Dip</strong> - Upsell automático<br>
+                            <strong>Margaritas</strong> - Identidad de bebidas<br>
+                            <strong>Tacos/Burritos</strong> - Rápido y familiar<br>
+                            <strong>Combos Familiares</strong> - Para llevar/catering
+                        </div>
+                    </div>
+                    <div class="chart-card">
+                        <div class="chart-header">
+                            <div>
+                                <div class="chart-title">❌ Considerar Eliminar</div>
+                                <div class="chart-subtitle">Simplificar = Mejor ejecución</div>
+                            </div>
+                        </div>
+                        <div style="font-size: 0.9rem; line-height: 2;">
+                            <strong>Vinos de baja rotación</strong> - Mantener solo 3-4<br>
+                            <strong>Platos complicados</strong> - Lento = mal servicio<br>
+                            <strong>Items con ingredientes únicos</strong> - Desperdicio<br>
+                            <strong>Seafood fuera de temporada</strong> - Solo Mar-Ago<br>
+                            <strong>Opciones que nadie pide</strong> - Revisar POS<br>
+                            <strong>Meta: Reducir menú 30%</strong>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2 class="section-title">Diseño del Nuevo Menú</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-card">
+                    <div style="font-size: 0.95rem; line-height: 1.8;">
+                        <strong>Principios de diseño:</strong><br><br>
+
+                        <strong>1. Menos es más</strong><br>
+                        • Máximo 40-50 items (vs 80+ actual)<br>
+                        • Cada item debe ganarse su lugar<br><br>
+
+                        <strong>2. Destacar estrellas</strong><br>
+                        • Boxes visuales para Patrón Special, Fajitas<br>
+                        • Fotos de 3-4 platos insignia<br>
+                        • "Favoritos de la casa" con íconos<br><br>
+
+                        <strong>3. Guiar al upsell</strong><br>
+                        • Cheese Dip en primer página<br>
+                        • Margaritas con upgrade visible<br>
+                        • Postres con descripción apetitosa<br><br>
+
+                        <strong>4. Precios psicológicos</strong><br>
+                        • Evitar .99 (se ve barato)<br>
+                        • Usar .95 o números redondos<br>
+                        • No alinear precios a la derecha<br><br>
+
+                        <strong>5. Familias primero</strong><br>
+                        • Combos familiares destacados<br>
+                        • Kids menu atractivo<br>
+                        • Opciones para compartir
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- TAB 5: ACTION PLAN -->
+            <div id="tab-action" class="tab-content">
+
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <h2 class="section-title">Plan de Acción: Primeros 90 Días</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-card">
+                    <table class="action-table">
+                        <thead>
+                            <tr>
+                                <th>Prioridad</th>
+                                <th>Acción</th>
+                                <th>Responsable</th>
+                                <th>Inversión</th>
+                                <th>ROI Esperado</th>
+                                <th>Timeline</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr>
+                                <td><span class="priority-badge priority-high">Alta</span></td>
+                                <td><strong>Entrenar meseros en upselling</strong><br><small>Cheese Dip + Margarita Jumbo + Postres</small></td>
+                                <td>Gerente</td>
+                                <td>$0</td>
+                                <td>+$3,000/mes</td>
+                                <td>Semana 1-2</td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge priority-high">Alta</span></td>
+                                <td><strong>Lanzar paquetes de Catering</strong><br><small>Corporativo + Eventos familiares</small></td>
+                                <td>Marketing</td>
+                                <td>$500</td>
+                                <td>+$5,000/mes</td>
+                                <td>Semana 2-3</td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge priority-high">Alta</span></td>
+                                <td><strong>Menú ToGo / Family Packs</strong><br><small>Combos para llevar optimizados</small></td>
+                                <td>Chef + Marketing</td>
+                                <td>$300</td>
+                                <td>+$4,000/mes</td>
+                                <td>Semana 3-4</td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge priority-medium">Media</span></td>
+                                <td><strong>Auditoría de menú</strong><br><small>Identificar items a eliminar (meta: -30%)</small></td>
+                                <td>Chef + Gerente</td>
+                                <td>$0</td>
+                                <td>Reducir costos</td>
+                                <td>Semana 4-6</td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge priority-medium">Media</span></td>
+                                <td><strong>Rediseño de menú físico</strong><br><small>Destacar estrellas, guiar upsell</small></td>
+                                <td>Marketing</td>
+                                <td>$1,500</td>
+                                <td>+$2/ticket</td>
+                                <td>Semana 6-8</td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge priority-medium">Media</span></td>
+                                <td><strong>Campaña meses lentos</strong><br><small>Email + Social para Enero (preparar en Dic)</small></td>
+                                <td>Marketing</td>
+                                <td>$1,000</td>
+                                <td>+$8,000 en Ene</td>
+                                <td>Semana 8-12</td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge priority-low">Baja</span></td>
+                                <td><strong>Sistema de captura de datos</strong><br><small>Email/teléfono para remarketing</small></td>
+                                <td>Gerente</td>
+                                <td>$200</td>
+                                <td>Base de clientes</td>
+                                <td>Semana 4</td>
+                            </tr>
+                            <tr>
+                                <td><span class="priority-badge priority-low">Baja</span></td>
+                                <td><strong>Happy Hour mejorado</strong><br><small>Lun-Jue 3-6pm en meses lentos</small></td>
+                                <td>Gerente</td>
+                                <td>$0</td>
+                                <td>+$2,000/mes</td>
+                                <td>Ongoing</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <h2 class="section-title">Calendario de Marketing Corregido</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="chart-card">
+                    <table class="action-table">
+                        <thead>
+                            <tr>
+                                <th>Mes</th>
+                                <th>Índice</th>
+                                <th>Inversión Mktg</th>
+                                <th>Estrategia Principal</th>
+                                <th>Focus</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="background: rgba(239, 68, 68, 0.05);">
+                                <td><strong>Enero</strong></td>
+                                <td>89 🔴</td>
+                                <td><strong>ALTA</strong></td>
+                                <td>Lunch specials, email a inactivos, birria push</td>
+                                <td>Llenar mesas</td>
+                            </tr>
+                            <tr>
+                                <td>Febrero</td>
+                                <td>93</td>
+                                <td>Media</td>
+                                <td>San Valentín parejas, cena para 2</td>
+                                <td>Evento específico</td>
+                            </tr>
+                            <tr style="background: rgba(34, 197, 94, 0.05);">
+                                <td>Marzo</td>
+                                <td>107 🟢</td>
+                                <td>Baja</td>
+                                <td>Cuaresma seafood, spring break familias</td>
+                                <td>Upselling</td>
+                            </tr>
+                            <tr style="background: rgba(34, 197, 94, 0.05);">
+                                <td>Abril</td>
+                                <td>107 🟢</td>
+                                <td>Baja</td>
+                                <td>Pre-Cinco awareness, capturar datos</td>
+                                <td>Preparar Mayo</td>
+                            </tr>
+                            <tr style="background: rgba(201, 162, 39, 0.1);">
+                                <td><strong>Mayo</strong></td>
+                                <td>129 ⭐</td>
+                                <td><strong>UPSELL</strong></td>
+                                <td>NO ADS - Focus en ticket, captura, catering eventos</td>
+                                <td>Maximizar $$$</td>
+                            </tr>
+                            <tr style="background: rgba(34, 197, 94, 0.05);">
+                                <td>Junio</td>
+                                <td>105 🟢</td>
+                                <td>Baja</td>
+                                <td>Día del Padre, terraza/patio</td>
+                                <td>Upselling</td>
+                            </tr>
+                            <tr>
+                                <td>Julio</td>
+                                <td>98</td>
+                                <td>Media</td>
+                                <td>4 de Julio, frozen drinks, outdoor</td>
+                                <td>Mantener</td>
+                            </tr>
+                            <tr>
+                                <td>Agosto</td>
+                                <td>100</td>
+                                <td>Media</td>
+                                <td>Back to school, family combos</td>
+                                <td>ToGo push</td>
+                            </tr>
+                            <tr style="background: rgba(239, 68, 68, 0.05);">
+                                <td><strong>Septiembre</strong></td>
+                                <td>93 🔴</td>
+                                <td><strong>ALTA</strong></td>
+                                <td>Game Day specials, beer buckets, Labor Day</td>
+                                <td>Llenar mesas</td>
+                            </tr>
+                            <tr style="background: rgba(239, 68, 68, 0.05);">
+                                <td><strong>Octubre</strong></td>
+                                <td>89 🔴</td>
+                                <td><strong>ALTA</strong></td>
+                                <td>Día de Muertos auténtico, Halloween familiar</td>
+                                <td>Llenar mesas</td>
+                            </tr>
+                            <tr>
+                                <td>Noviembre</td>
+                                <td>93</td>
+                                <td>Media</td>
+                                <td>Catering Thanksgiving, holiday parties</td>
+                                <td>Catering push</td>
+                            </tr>
+                            <tr>
+                                <td>Diciembre</td>
+                                <td>98</td>
+                                <td>Media</td>
+                                <td>Gift cards, NYE, catering fiestas</td>
+                                <td>Catering + Gift</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <h2 class="section-title">Métricas de Éxito</h2>
+                    <div class="section-line"></div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-label">Ticket Promedio</div>
+                        <div class="kpi-value">$12.50</div>
+                        <div class="kpi-detail">Meta vs $10.25 actual (+22%)</div>
+                    </div>
+                    <div class="kpi-card success">
+                        <div class="kpi-label">Catering Revenue</div>
+                        <div class="kpi-value">+$60K</div>
+                        <div class="kpi-detail">Año 1 objetivo</div>
+                    </div>
+                    <div class="kpi-card highlight">
+                        <div class="kpi-label">ToGo Revenue</div>
+                        <div class="kpi-value">+$48K</div>
+                        <div class="kpi-detail">Año 1 objetivo</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-label">Meses Lentos</div>
+                        <div class="kpi-value">+$24K</div>
+                        <div class="kpi-detail">Recuperar en Ene/Sep/Oct</div>
+                    </div>
+                </div>
+
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>El Patrón - Plan Estratégico 2026 | Datos: 36 meses (2023-2025) | Familiar · Rápido · Buen Precio</p>
+    </footer>
+
+    <script>
+        // Tab Navigation
+        function showTab(tabId) {
+            document.querySelectorAll('.tab-content').forEach(tab => tab.classList.remove('active'));
+            document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+
+            document.getElementById('tab-' + tabId).classList.add('active');
+            event.target.classList.add('active');
+
+            // Initialize charts when tab becomes visible
+            if (tabId === 'overview') {
+                initOverviewCharts();
+            } else if (tabId === 'seasonality') {
+                initSeasonalityCharts();
+            } else if (tabId === 'growth') {
+                initGrowthCharts();
+            }
+        }
+
+        // Data
+        const rawData = [
+            {year:2023,month:1,category:"BEER",sales:11986.12},{year:2023,month:1,category:"DESSERTS",sales:991.22},{year:2023,month:1,category:"FOOD",sales:126993.38},{year:2023,month:1,category:"LIQUORS",sales:28285.36},{year:2023,month:1,category:"SEAFOOD",sales:5915.87},{year:2023,month:1,category:"SOFT DRINKS",sales:12322.95},{year:2023,month:1,category:"WINES",sales:543.86},
+            {year:2023,month:2,category:"BEER",sales:11206.89},{year:2023,month:2,category:"DESSERTS",sales:869.58},{year:2023,month:2,category:"FOOD",sales:119175.22},{year:2023,month:2,category:"LIQUORS",sales:31790.46},{year:2023,month:2,category:"SEAFOOD",sales:5006.94},{year:2023,month:2,category:"SOFT DRINKS",sales:11558.74},{year:2023,month:2,category:"WINES",sales:621.83},
+            {year:2023,month:3,category:"BEER",sales:13890.82},{year:2023,month:3,category:"DESSERTS",sales:840.4},{year:2023,month:3,category:"FOOD",sales:133773.57},{year:2023,month:3,category:"LIQUORS",sales:35676.75},{year:2023,month:3,category:"SEAFOOD",sales:5758.13},{year:2023,month:3,category:"SOFT DRINKS",sales:12175.79},{year:2023,month:3,category:"WINES",sales:710.78},
+            {year:2023,month:4,category:"BEER",sales:13515.33},{year:2023,month:4,category:"DESSERTS",sales:896.51},{year:2023,month:4,category:"FOOD",sales:135812.98},{year:2023,month:4,category:"LIQUORS",sales:30735.28},{year:2023,month:4,category:"SEAFOOD",sales:5887.99},{year:2023,month:4,category:"SOFT DRINKS",sales:11238.65},{year:2023,month:4,category:"WINES",sales:642.81},
+            {year:2023,month:5,category:"BEER",sales:14589.23},{year:2023,month:5,category:"DESSERTS",sales:952.22},{year:2023,month:5,category:"FOOD",sales:156243.68},{year:2023,month:5,category:"LIQUORS",sales:45197.15},{year:2023,month:5,category:"SEAFOOD",sales:6166.3},{year:2023,month:5,category:"SOFT DRINKS",sales:13057.8},{year:2023,month:5,category:"WINES",sales:651.68},
+            {year:2023,month:6,category:"BEER",sales:10943.11},{year:2023,month:6,category:"DESSERTS",sales:810.12},{year:2023,month:6,category:"FOOD",sales:126626.16},{year:2023,month:6,category:"LIQUORS",sales:30698.64},{year:2023,month:6,category:"SEAFOOD",sales:5098.57},{year:2023,month:6,category:"SOFT DRINKS",sales:12394.65},{year:2023,month:6,category:"WINES",sales:622.86},
+            {year:2023,month:7,category:"BEER",sales:11489.84},{year:2023,month:7,category:"DESSERTS",sales:678.9},{year:2023,month:7,category:"FOOD",sales:125690.14},{year:2023,month:7,category:"LIQUORS",sales:29804.13},{year:2023,month:7,category:"SEAFOOD",sales:6053.2},{year:2023,month:7,category:"SOFT DRINKS",sales:12290.9},{year:2023,month:7,category:"WINES",sales:604.88},
+            {year:2023,month:8,category:"BEER",sales:10134.4},{year:2023,month:8,category:"DESSERTS",sales:571.81},{year:2023,month:8,category:"FOOD",sales:120756.16},{year:2023,month:8,category:"LIQUORS",sales:26682.57},{year:2023,month:8,category:"SEAFOOD",sales:4867.86},{year:2023,month:8,category:"SOFT DRINKS",sales:11081.5},{year:2023,month:8,category:"WINES",sales:603.83},
+            {year:2023,month:9,category:"BEER",sales:10451.54},{year:2023,month:9,category:"DESSERTS",sales:805.23},{year:2023,month:9,category:"FOOD",sales:122159.39},{year:2023,month:9,category:"LIQUORS",sales:27778.57},{year:2023,month:9,category:"SEAFOOD",sales:4116.69},{year:2023,month:9,category:"SOFT DRINKS",sales:10968.35},{year:2023,month:9,category:"WINES",sales:529.87},
+            {year:2023,month:10,category:"BEER",sales:9029.66},{year:2023,month:10,category:"DESSERTS",sales:639.14},{year:2023,month:10,category:"FOOD",sales:113396.88},{year:2023,month:10,category:"LIQUORS",sales:24222.54},{year:2023,month:10,category:"SEAFOOD",sales:4235.03},{year:2023,month:10,category:"SOFT DRINKS",sales:10967.05},{year:2023,month:10,category:"WINES",sales:637.75},
+            {year:2023,month:11,category:"BEER",sales:9830.45},{year:2023,month:11,category:"DESSERTS",sales:566.7},{year:2023,month:11,category:"FOOD",sales:109023.0},{year:2023,month:11,category:"LIQUORS",sales:24241.74},{year:2023,month:11,category:"SEAFOOD",sales:3593.39},{year:2023,month:11,category:"SOFT DRINKS",sales:10317.8},{year:2023,month:11,category:"WINES",sales:608.89},
+            {year:2023,month:12,category:"BEER",sales:11344.23},{year:2023,month:12,category:"DESSERTS",sales:1019.78},{year:2023,month:12,category:"FOOD",sales:123426.99},{year:2023,month:12,category:"LIQUORS",sales:26192.36},{year:2023,month:12,category:"SEAFOOD",sales:3960.18},{year:2023,month:12,category:"SOFT DRINKS",sales:11173.3},{year:2023,month:12,category:"WINES",sales:685.83},
+            {year:2024,month:1,category:"BEER",sales:8430.44},{year:2024,month:1,category:"DESSERTS",sales:832.63},{year:2024,month:1,category:"FOOD",sales:107104.42},{year:2024,month:1,category:"LIQUORS",sales:20385.53},{year:2024,month:1,category:"SEAFOOD",sales:3169.84},{year:2024,month:1,category:"SOFT DRINKS",sales:9458.9},{year:2024,month:1,category:"WINES",sales:383.96},
+            {year:2024,month:2,category:"BEER",sales:10221.15},{year:2024,month:2,category:"DESSERTS",sales:761.5},{year:2024,month:2,category:"FOOD",sales:113873.15},{year:2024,month:2,category:"LIQUORS",sales:25382.38},{year:2024,month:2,category:"SEAFOOD",sales:3711.96},{year:2024,month:2,category:"SOFT DRINKS",sales:9804.3},{year:2024,month:2,category:"WINES",sales:491.93},
+            {year:2024,month:3,category:"BEER",sales:12022.72},{year:2024,month:3,category:"DESSERTS",sales:1073.79},{year:2024,month:3,category:"FOOD",sales:133214.99},{year:2024,month:3,category:"LIQUORS",sales:29019.48},{year:2024,month:3,category:"SEAFOOD",sales:5706.4},{year:2024,month:3,category:"SOFT DRINKS",sales:11016.58},{year:2024,month:3,category:"WINES",sales:509.83},
+            {year:2024,month:4,category:"BEER",sales:10869.16},{year:2024,month:4,category:"DESSERTS",sales:831.3},{year:2024,month:4,category:"FOOD",sales:131210.24},{year:2024,month:4,category:"LIQUORS",sales:26330.93},{year:2024,month:4,category:"SEAFOOD",sales:4849.3},{year:2024,month:4,category:"SOFT DRINKS",sales:10058.7},{year:2024,month:4,category:"WINES",sales:436.88},
+            {year:2024,month:5,category:"BEER",sales:14349.2},{year:2024,month:5,category:"DESSERTS",sales:950.72},{year:2024,month:5,category:"FOOD",sales:168918.0},{year:2024,month:5,category:"LIQUORS",sales:38613.13},{year:2024,month:5,category:"SEAFOOD",sales:6055.68},{year:2024,month:5,category:"SOFT DRINKS",sales:10679.25},{year:2024,month:5,category:"WINES",sales:499.38},
+            {year:2024,month:6,category:"BEER",sales:11909.91},{year:2024,month:6,category:"DESSERTS",sales:938.09},{year:2024,month:6,category:"FOOD",sales:140354.93},{year:2024,month:6,category:"LIQUORS",sales:28035.21},{year:2024,month:6,category:"SEAFOOD",sales:5913.89},{year:2024,month:6,category:"SOFT DRINKS",sales:10693.06},{year:2024,month:6,category:"WINES",sales:511.85},
+            {year:2024,month:7,category:"BEER",sales:10456.13},{year:2024,month:7,category:"DESSERTS",sales:576.97},{year:2024,month:7,category:"FOOD",sales:131442.58},{year:2024,month:7,category:"LIQUORS",sales:22320.86},{year:2024,month:7,category:"SEAFOOD",sales:5123.01},{year:2024,month:7,category:"SOFT DRINKS",sales:9822.9},{year:2024,month:7,category:"WINES",sales:434.82},
+            {year:2024,month:8,category:"BEER",sales:11443.05},{year:2024,month:8,category:"DESSERTS",sales:791.38},{year:2024,month:8,category:"FOOD",sales:134581.15},{year:2024,month:8,category:"LIQUORS",sales:27774.16},{year:2024,month:8,category:"SEAFOOD",sales:4955.45},{year:2024,month:8,category:"SOFT DRINKS",sales:9845.9},{year:2024,month:8,category:"WINES",sales:414.92},
+            {year:2024,month:9,category:"BEER",sales:8482.26},{year:2024,month:9,category:"DESSERTS",sales:494.51},{year:2024,month:9,category:"FOOD",sales:116630.12},{year:2024,month:9,category:"LIQUORS",sales:21855.68},{year:2024,month:9,category:"SEAFOOD",sales:4251.39},{year:2024,month:9,category:"SOFT DRINKS",sales:8640.3},{year:2024,month:9,category:"WINES",sales:392.9},
+            {year:2024,month:10,category:"BEER",sales:11304.4},{year:2024,month:10,category:"DESSERTS",sales:657.0},{year:2024,month:10,category:"FOOD",sales:128925.82},{year:2024,month:10,category:"LIQUORS",sales:27857.06},{year:2024,month:10,category:"SEAFOOD",sales:4556.85},{year:2024,month:10,category:"SOFT DRINKS",sales:9704.11},{year:2024,month:10,category:"WINES",sales:484.92},
+            {year:2024,month:11,category:"BEER",sales:10770.12},{year:2024,month:11,category:"DESSERTS",sales:739.72},{year:2024,month:11,category:"FOOD",sales:130432.94},{year:2024,month:11,category:"LIQUORS",sales:24907.1},{year:2024,month:11,category:"SEAFOOD",sales:4388.34},{year:2024,month:11,category:"SOFT DRINKS",sales:9441.7},{year:2024,month:11,category:"WINES",sales:585.84},
+            {year:2024,month:12,category:"BEER",sales:11143.23},{year:2024,month:12,category:"DESSERTS",sales:528.98},{year:2024,month:12,category:"FOOD",sales:128426.56},{year:2024,month:12,category:"LIQUORS",sales:25060.62},{year:2024,month:12,category:"SEAFOOD",sales:4445.62},{year:2024,month:12,category:"SOFT DRINKS",sales:9588.15},{year:2024,month:12,category:"WINES",sales:532.86},
+            {year:2025,month:1,category:"BEER",sales:8892.41},{year:2025,month:1,category:"DESSERTS",sales:393.65},{year:2025,month:1,category:"FOOD",sales:110278.27},{year:2025,month:1,category:"LIQUORS",sales:19786.25},{year:2025,month:1,category:"SEAFOOD",sales:4009.42},{year:2025,month:1,category:"SOFT DRINKS",sales:8642.2},{year:2025,month:1,category:"WINES",sales:570.84},
+            {year:2025,month:2,category:"BEER",sales:9123.25},{year:2025,month:2,category:"DESSERTS",sales:459.78},{year:2025,month:2,category:"FOOD",sales:119837.37},{year:2025,month:2,category:"LIQUORS",sales:21808.53},{year:2025,month:2,category:"SEAFOOD",sales:4045.79},{year:2025,month:2,category:"SOFT DRINKS",sales:8574.55},{year:2025,month:2,category:"WINES",sales:411.92},
+            {year:2025,month:3,category:"BEER",sales:11608.15},{year:2025,month:3,category:"DESSERTS",sales:703.84},{year:2025,month:3,category:"FOOD",sales:147004.82},{year:2025,month:3,category:"LIQUORS",sales:29358.22},{year:2025,month:3,category:"SEAFOOD",sales:5146.88},{year:2025,month:3,category:"SOFT DRINKS",sales:10148.07},{year:2025,month:3,category:"WINES",sales:529.87},
+            {year:2025,month:4,category:"BEER",sales:11513.94},{year:2025,month:4,category:"DESSERTS",sales:871.15},{year:2025,month:4,category:"FOOD",sales:146693.61},{year:2025,month:4,category:"LIQUORS",sales:28236.6},{year:2025,month:4,category:"SEAFOOD",sales:5008.07},{year:2025,month:4,category:"SOFT DRINKS",sales:10937.73},{year:2025,month:4,category:"WINES",sales:518.58},
+            {year:2025,month:5,category:"BEER",sales:12585.66},{year:2025,month:5,category:"DESSERTS",sales:911.33},{year:2025,month:5,category:"FOOD",sales:164581.21},{year:2025,month:5,category:"LIQUORS",sales:34734.01},{year:2025,month:5,category:"SEAFOOD",sales:5190.17},{year:2025,month:5,category:"SOFT DRINKS",sales:12265.23},{year:2025,month:5,category:"WINES",sales:766.3},
+            {year:2025,month:6,category:"BEER",sales:10495.09},{year:2025,month:6,category:"DESSERTS",sales:600.25},{year:2025,month:6,category:"FOOD",sales:139697.66},{year:2025,month:6,category:"LIQUORS",sales:25097.97},{year:2025,month:6,category:"SEAFOOD",sales:5713.85},{year:2025,month:6,category:"SOFT DRINKS",sales:10107.35},{year:2025,month:6,category:"WINES",sales:561.3},
+            {year:2025,month:7,category:"BEER",sales:10394.69},{year:2025,month:7,category:"DESSERTS",sales:652.83},{year:2025,month:7,category:"FOOD",sales:119243.79},{year:2025,month:7,category:"LIQUORS",sales:19388.87},{year:2025,month:7,category:"SEAFOOD",sales:4235.9},{year:2025,month:7,category:"SOFT DRINKS",sales:9148.55},{year:2025,month:7,category:"WINES",sales:343.19},
+            {year:2025,month:8,category:"BEER",sales:11319.6},{year:2025,month:8,category:"DESSERTS",sales:776.82},{year:2025,month:8,category:"FOOD",sales:133843.49},{year:2025,month:8,category:"LIQUORS",sales:23070.12},{year:2025,month:8,category:"SEAFOOD",sales:5201.1},{year:2025,month:8,category:"SOFT DRINKS",sales:10241.21},{year:2025,month:8,category:"WINES",sales:619.08},
+            {year:2025,month:9,category:"BEER",sales:9280.82},{year:2025,month:9,category:"DESSERTS",sales:796.1},{year:2025,month:9,category:"FOOD",sales:126580.02},{year:2025,month:9,category:"LIQUORS",sales:19334.02},{year:2025,month:9,category:"SEAFOOD",sales:4139.94},{year:2025,month:9,category:"SOFT DRINKS",sales:9771.62},{year:2025,month:9,category:"WINES",sales:515.41},
+            {year:2025,month:10,category:"BEER",sales:8291.49},{year:2025,month:10,category:"DESSERTS",sales:613.08},{year:2025,month:10,category:"FOOD",sales:98692.1},{year:2025,month:10,category:"LIQUORS",sales:18640.48},{year:2025,month:10,category:"SEAFOOD",sales:3768.19},{year:2025,month:10,category:"SOFT DRINKS",sales:8859.61},{year:2025,month:10,category:"WINES",sales:417.18},
+            {year:2025,month:11,category:"BEER",sales:9323.53},{year:2025,month:11,category:"FOOD",sales:123481.36},{year:2025,month:11,category:"LIQUORS",sales:19811.3},{year:2025,month:11,category:"SOFT DRINKS",sales:10145.53},{year:2025,month:11,category:"WINES",sales:396.48},
+            {year:2025,month:12,category:"BEER",sales:10968.66},{year:2025,month:12,category:"FOOD",sales:129373.62},{year:2025,month:12,category:"LIQUORS",sales:21035.59},{year:2025,month:12,category:"SOFT DRINKS",sales:10110.59},{year:2025,month:12,category:"WINES",sales:440.49}
+        ];
+
+        const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        const categories = ['FOOD', 'LIQUORS', 'BEER', 'SOFT DRINKS', 'SEAFOOD', 'DESSERTS', 'WINES'];
+
+        let revenueChart, categoryPieChart, impactChart;
+
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            initOverviewCharts();
+        });
+
+        function initOverviewCharts() {
+            setTimeout(() => {
+                createRevenueChart();
+                createCategoryPieChart();
+            }, 100);
+        }
+
+        function initSeasonalityCharts() {
+            setTimeout(() => {
+                createCalendar();
+                createHeatmap();
+            }, 100);
+        }
+
+        function initGrowthCharts() {
+            setTimeout(() => {
+                createImpactChart();
+            }, 100);
+        }
+
+        function createRevenueChart() {
+            const ctx = document.getElementById('revenueChart');
+            if (!ctx) return;
+
+            if (revenueChart) revenueChart.destroy();
+
+            const years = [2023, 2024, 2025];
+            const colors = ['#c9a227', '#c45c3e', '#7a9e7e'];
+            const datasets = [];
+
+            years.forEach((year, idx) => {
+                const monthlyData = [];
+                for (let m = 1; m <= 12; m++) {
+                    const monthData = rawData.filter(d => d.year === year && d.month === m);
+                    const total = monthData.reduce((sum, d) => sum + d.sales, 0);
+                    monthlyData.push(total || null);
+                }
+                datasets.push({
+                    label: year.toString(),
+                    data: monthlyData,
+                    borderColor: colors[idx],
+                    backgroundColor: colors[idx] + '20',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4
+                });
+            });
+
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: monthNames, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: $${(ctx.raw/1000).toFixed(0)}K`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            ticks: { callback: v => '$' + (v/1000).toFixed(0) + 'K' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function createCategoryPieChart() {
+            const ctx = document.getElementById('categoryPieChart');
+            if (!ctx) return;
+
+            if (categoryPieChart) categoryPieChart.destroy();
+
+            const categoryColors = {
+                'FOOD': '#c9a227',
+                'LIQUORS': '#c45c3e',
+                'BEER': '#d97706',
+                'SOFT DRINKS': '#7a9e7e',
+                'SEAFOOD': '#2c3e50',
+                'DESSERTS': '#a855f7',
+                'WINES': '#be123c'
+            };
+
+            const categoryTotals = {};
+            categories.forEach(cat => categoryTotals[cat] = 0);
+            rawData.forEach(d => {
+                if (categories.includes(d.category)) {
+                    categoryTotals[d.category] += d.sales;
+                }
+            });
+
+            const total = Object.values(categoryTotals).reduce((s, v) => s + v, 0);
+            const sortedCats = [...categories].sort((a, b) => categoryTotals[b] - categoryTotals[a]);
+
+            categoryPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: sortedCats,
+                    datasets: [{
+                        data: sortedCats.map(c => categoryTotals[c]),
+                        backgroundColor: sortedCats.map(c => categoryColors[c]),
+                        borderWidth: 0
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    cutout: '60%',
+                    plugins: {
+                        legend: { position: 'right', labels: { usePointStyle: true, font: { size: 11 } } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => {
+                                    const pct = ((ctx.raw / total) * 100).toFixed(1);
+                                    return `${ctx.label}: ${pct}%`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function createCalendar() {
+            const grid = document.getElementById('calendarGrid');
+            if (!grid) return;
+
+            const monthData = [
+                { name: 'Ene', index: 89, type: 'high', action: 'INVERTIR' },
+                { name: 'Feb', index: 93, type: 'medium', action: 'Mantener' },
+                { name: 'Mar', index: 107, type: 'low', action: 'Upsell' },
+                { name: 'Abr', index: 107, type: 'low', action: 'Upsell' },
+                { name: 'May', index: 129, type: 'peak', action: 'CAPTURAR' },
+                { name: 'Jun', index: 105, type: 'low', action: 'Upsell' },
+                { name: 'Jul', index: 98, type: 'medium', action: 'Mantener' },
+                { name: 'Ago', index: 100, type: 'medium', action: 'ToGo' },
+                { name: 'Sep', index: 93, type: 'high', action: 'INVERTIR' },
+                { name: 'Oct', index: 89, type: 'high', action: 'INVERTIR' },
+                { name: 'Nov', index: 93, type: 'medium', action: 'Catering' },
+                { name: 'Dic', index: 98, type: 'medium', action: 'Catering' }
+            ];
+
+            grid.innerHTML = monthData.map(m => `
+                <div class="calendar-month ${m.type}">
+                    <div class="month-name">${m.name}</div>
+                    <div class="month-index">${m.index}</div>
+                    <div class="month-action">${m.action}</div>
+                </div>
+            `).join('');
+        }
+
+        function createHeatmap() {
+            const table = document.getElementById('heatmapTable');
+            if (!table) return;
+
+            const categoryMonthAvg = {};
+            const categoryAvg = {};
+
+            categories.forEach(cat => {
+                categoryMonthAvg[cat] = {};
+                let catTotal = 0;
+                let catCount = 0;
+
+                for (let m = 1; m <= 12; m++) {
+                    const monthData = rawData.filter(d => d.category === cat && d.month === m);
+                    if (monthData.length > 0) {
+                        const avg = monthData.reduce((s, d) => s + d.sales, 0) / monthData.length;
+                        categoryMonthAvg[cat][m] = avg;
+                        catTotal += avg;
+                        catCount++;
+                    }
+                }
+                categoryAvg[cat] = catTotal / catCount;
+            });
+
+            let html = '<thead><tr><th>Categoría</th>';
+            monthNames.forEach(m => html += `<th>${m}</th>`);
+            html += '</tr></thead><tbody>';
+
+            categories.forEach(cat => {
+                html += `<tr><td>${cat}</td>`;
+                for (let m = 1; m <= 12; m++) {
+                    const val = categoryMonthAvg[cat][m];
+                    if (val) {
+                        const index = Math.round((val / categoryAvg[cat]) * 100);
+                        const heatClass = getHeatClass(index);
+                        html += `<td class="${heatClass}">${index}</td>`;
+                    } else {
+                        html += `<td>-</td>`;
+                    }
+                }
+                html += '</tr>';
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        function getHeatClass(index) {
+            if (index >= 130) return 'heat-very-high';
+            if (index >= 110) return 'heat-high';
+            if (index >= 100) return 'heat-medium-high';
+            if (index >= 95) return 'heat-medium';
+            if (index >= 90) return 'heat-medium-low';
+            if (index >= 80) return 'heat-low';
+            return 'heat-very-low';
+        }
+
+        function createImpactChart() {
+            const ctx = document.getElementById('impactChart');
+            if (!ctx) return;
+
+            if (impactChart) impactChart.destroy();
+
+            impactChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: ['Upselling', 'Catering', 'ToGo', 'Meses Lentos', 'Menu Eng.'],
+                    datasets: [{
+                        label: 'Impacto Anual Proyectado',
+                        data: [36000, 60000, 48000, 24000, 18000],
+                        backgroundColor: ['#c9a227', '#c45c3e', '#7a9e7e', '#2c3e50', '#a855f7'],
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    indexAxis: 'y',
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => '+$' + (ctx.raw/1000).toFixed(0) + 'K/año'
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { callback: v => '$' + (v/1000) + 'K' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+    </script>
+</body>
+</html>

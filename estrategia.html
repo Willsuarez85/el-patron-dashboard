@@ -1,0 +1,1348 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Patrón - Estrategia de Marketing 2026</title>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --black: #1a1a1a;
+            --gold: #c9a227;
+            --gold-light: #e8d5a3;
+            --cream: #faf8f3;
+            --terracotta: #c45c3e;
+            --sage: #7a9e7e;
+            --navy: #2c3e50;
+            --gray: #6b7280;
+            --light-gray: #f3f4f6;
+        }
+
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--cream);
+            color: var(--black);
+            line-height: 1.7;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Header */
+        .header {
+            background: var(--black);
+            color: var(--cream);
+            padding: 3rem 2rem;
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .header-badge {
+            display: inline-block;
+            background: var(--gold);
+            color: var(--black);
+            padding: 0.25rem 1rem;
+            border-radius: 20px;
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 1rem;
+        }
+
+        .header h1 {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .header p {
+            color: var(--gold-light);
+            font-size: 1.1rem;
+        }
+
+        /* Section */
+        .section {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.06);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid var(--gold);
+        }
+
+        .section-number {
+            width: 40px;
+            height: 40px;
+            background: var(--gold);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1.1rem;
+            color: var(--black);
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+        }
+
+        /* Strategy Box */
+        .strategy-box {
+            background: var(--light-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 1.5rem;
+            border-left: 4px solid var(--gold);
+        }
+
+        .strategy-box.terracotta { border-left-color: var(--terracotta); }
+        .strategy-box.sage { border-left-color: var(--sage); }
+        .strategy-box.navy { border-left-color: var(--navy); }
+
+        .strategy-box h4 {
+            font-size: 1.1rem;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .strategy-box p {
+            color: var(--gray);
+            font-size: 0.95rem;
+        }
+
+        /* Table */
+        .table-wrapper {
+            overflow-x: auto;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: var(--black);
+            color: var(--cream);
+            padding: 1rem;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        td {
+            padding: 1rem;
+            border-bottom: 1px solid var(--light-gray);
+            vertical-align: top;
+        }
+
+        tr:hover td {
+            background: rgba(201, 162, 39, 0.05);
+        }
+
+        /* Promo Grid */
+        .promo-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .promo-card {
+            background: white;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+        }
+
+        .promo-card:hover {
+            border-color: var(--gold);
+            transform: translateY(-4px);
+        }
+
+        .promo-icon {
+            font-size: 2rem;
+            margin-bottom: 1rem;
+        }
+
+        .promo-title {
+            font-weight: 700;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .promo-desc {
+            font-size: 0.85rem;
+            color: var(--gray);
+            margin-bottom: 1rem;
+        }
+
+        .promo-metric {
+            display: flex;
+            justify-content: space-between;
+            padding-top: 0.75rem;
+            border-top: 1px solid var(--light-gray);
+            font-size: 0.8rem;
+        }
+
+        .promo-metric span:last-child {
+            font-weight: 700;
+            color: var(--sage);
+        }
+
+        /* Email Sequence */
+        .email-sequence {
+            position: relative;
+            padding-left: 2rem;
+        }
+
+        .email-sequence::before {
+            content: '';
+            position: absolute;
+            left: 7px;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--gold);
+        }
+
+        .email-item {
+            position: relative;
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 1rem 1.25rem;
+            margin-bottom: 1rem;
+        }
+
+        .email-item::before {
+            content: '';
+            position: absolute;
+            left: -1.65rem;
+            top: 1.25rem;
+            width: 12px;
+            height: 12px;
+            background: var(--gold);
+            border-radius: 50%;
+            border: 3px solid var(--cream);
+        }
+
+        .email-day {
+            font-size: 0.7rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            color: var(--terracotta);
+            font-weight: 600;
+            margin-bottom: 0.25rem;
+        }
+
+        .email-subject {
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .email-content {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* Loyalty Tiers */
+        .tier-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .tier-card {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 12px;
+            position: relative;
+        }
+
+        .tier-card.bronze { background: linear-gradient(135deg, #cd7f32 0%, #a86428 100%); color: white; }
+        .tier-card.silver { background: linear-gradient(135deg, #c0c0c0 0%, #a8a8a8 100%); color: var(--black); }
+        .tier-card.gold { background: linear-gradient(135deg, var(--gold) 0%, #a8891f 100%); color: var(--black); }
+
+        .tier-name {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.25rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .tier-requirement {
+            font-size: 0.8rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .tier-benefits {
+            text-align: left;
+            font-size: 0.85rem;
+            line-height: 1.8;
+        }
+
+        /* Catering Packages */
+        .package-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .package-card {
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .package-header {
+            background: var(--black);
+            color: var(--cream);
+            padding: 1rem 1.5rem;
+        }
+
+        .package-header h4 {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+        }
+
+        .package-body {
+            padding: 1.5rem;
+        }
+
+        .package-price {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--terracotta);
+            margin-bottom: 1rem;
+        }
+
+        .package-price span {
+            font-size: 0.9rem;
+            font-weight: 400;
+            color: var(--gray);
+        }
+
+        .package-includes {
+            font-size: 0.9rem;
+            line-height: 1.8;
+        }
+
+        /* Calendar */
+        .calendar-month {
+            background: var(--light-gray);
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .calendar-month h5 {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .calendar-month h5 span {
+            font-size: 0.75rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-weight: 600;
+        }
+
+        .invest-high { background: #dcfce7; color: #166534; }
+        .invest-med { background: #fef9c3; color: #854d0e; }
+        .invest-low { background: #fee2e2; color: #991b1b; }
+        .invest-peak { background: #fef3c7; color: #92400e; }
+
+        .calendar-month p {
+            font-size: 0.85rem;
+            color: var(--gray);
+        }
+
+        /* ROI Box */
+        .roi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1rem;
+            margin-top: 1.5rem;
+        }
+
+        .roi-card {
+            background: var(--black);
+            color: var(--cream);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .roi-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: var(--gold);
+        }
+
+        .roi-label {
+            font-size: 0.75rem;
+            color: var(--gold-light);
+            margin-top: 0.25rem;
+        }
+
+        /* Copy Block */
+        .copy-block {
+            background: var(--black);
+            color: var(--cream);
+            border-radius: 8px;
+            padding: 1.25rem;
+            margin-bottom: 1rem;
+            font-size: 0.95rem;
+            line-height: 1.6;
+        }
+
+        .copy-block strong {
+            color: var(--gold);
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .tier-grid, .roi-grid {
+                grid-template-columns: 1fr;
+            }
+            .header h1 {
+                font-size: 1.75rem;
+            }
+        }
+
+        /* Print */
+        @media print {
+            .section { break-inside: avoid; }
+            body { font-size: 11pt; }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="header">
+        <div class="header-badge">Plan Estratégico 2026</div>
+        <h1>El Patrón</h1>
+        <p>Sistema Completo de Marketing para Restaurante Familiar</p>
+    </div>
+
+    <div class="container">
+
+        <!-- RESUMEN EJECUTIVO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">0</div>
+                <h2 class="section-title">Resumen Ejecutivo</h2>
+            </div>
+
+            <div class="strategy-box">
+                <h4>🎯 El Problema</h4>
+                <p>Ventas en declive (-3% YoY), licores cayendo -12%, meses lentos sin estrategia, dependencia del dine-in con capacidad limitada.</p>
+            </div>
+
+            <div class="strategy-box sage">
+                <h4>💡 La Solución: 5 Pilares de Crecimiento</h4>
+                <p>1) Promociones cruzadas para aumentar frecuencia · 2) Tráfico en meses lentos con inversión inteligente · 3) Programa de fidelización para familias · 4) Catering & ToGo como motor de crecimiento · 5) Email marketing para reactivar y retener</p>
+            </div>
+
+            <div class="roi-grid">
+                <div class="roi-card">
+                    <div class="roi-value">+$186K</div>
+                    <div class="roi-label">Impacto Anual Total</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">+22%</div>
+                    <div class="roi-label">Ticket Promedio</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">+$60K</div>
+                    <div class="roi-label">Nuevo Canal Catering</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">2,500</div>
+                    <div class="roi-label">Emails Año 1</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 1. PROMOCIONES CRUZADAS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2 class="section-title">Promociones Cruzadas</h2>
+            </div>
+
+            <p style="margin-bottom: 1.5rem; color: var(--gray);">Estrategias para aumentar frecuencia de visita y atraer nuevos segmentos a través de alianzas locales y promociones internas.</p>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">🤝 Alianzas Locales</h3>
+
+            <div class="promo-grid" style="margin-bottom: 2rem;">
+                <div class="promo-card">
+                    <div class="promo-icon">🏢</div>
+                    <div class="promo-title">Oficinas & Empresas</div>
+                    <div class="promo-desc">Descuento 15% en catering para empresas dentro de 5 millas. Flyers en oficinas con cupón de primer pedido.</div>
+                    <div class="promo-metric">
+                        <span>Costo: Flyers $200</span>
+                        <span>+$3K/mes</span>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">⚽</div>
+                    <div class="promo-title">Ligas Deportivas</div>
+                    <div class="promo-desc">Patrocinio de liga local ($500). Jersey con logo + 10% descuento para jugadores y familias post-partido.</div>
+                    <div class="promo-metric">
+                        <span>Costo: $500/temporada</span>
+                        <span>+$1.5K/mes</span>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">🏫</div>
+                    <div class="promo-title">Escuelas & PTAs</div>
+                    <div class="promo-desc">Noches de fundraising: 20% de ventas va a la escuela. Promocionar vía email de la escuela.</div>
+                    <div class="promo-metric">
+                        <span>Costo: $0</span>
+                        <span>+$2K/evento</span>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">💒</div>
+                    <div class="promo-title">Iglesias & Comunidad</div>
+                    <div class="promo-desc">Catering para eventos religiosos. Descuento 10% para grupos de 20+. Promoción en bulletins dominicales.</div>
+                    <div class="promo-metric">
+                        <span>Costo: $0</span>
+                        <span>+$2K/mes</span>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">🔄 Cross-Selling Interno</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Combo</th>
+                            <th>Mecánica</th>
+                            <th>Script del Mesero</th>
+                            <th>Incremento</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Happy Hour → Cena</strong></td>
+                            <td>Cupón de $5 off cena si vienes a HH primero</td>
+                            <td>"¿Se quedan a cenar? Tenemos $5 off si ordenan entradas"</td>
+                            <td>+$15/mesa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Dine-In → ToGo</strong></td>
+                            <td>10% off en siguiente orden ToGo con recibo de cena</td>
+                            <td>"Aquí está su cupón para su próximo pedido para llevar"</td>
+                            <td>+1 visita</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Margarita → Postre</strong></td>
+                            <td>$2 off postre con cada margarita jumbo</td>
+                            <td>"Con la jumbo tienen $2 off cualquier postre"</td>
+                            <td>+$6/mesa</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fajitas → Catering</strong></td>
+                            <td>Flyer en la mesa: "¿Fajita Bar para tu próximo evento?"</td>
+                            <td>"¿Saben que hacemos fajita bars para fiestas?"</td>
+                            <td>Lead gen</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Kids Meal → Birthday Club</strong></td>
+                            <td>Signup para email list = postre gratis hoy</td>
+                            <td>"¿Registramos a los niños en nuestro Birthday Club? Postre gratis hoy"</td>
+                            <td>+Email</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 2. TRÁFICO EN MESES LENTOS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2 class="section-title">Estrategia de Tráfico por Temporada</h2>
+            </div>
+
+            <div class="strategy-box terracotta">
+                <h4>⚠️ La Lógica Corregida</h4>
+                <p><strong>NO invertir más en Mayo</strong> (ya está lleno). <strong>SÍ invertir fuerte en Enero, Septiembre, Octubre</strong> cuando hay mesas vacías. Cada $1 en meses lentos = más impacto que en temporada alta.</p>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">📅 Calendario de Inversión</h3>
+
+            <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 1rem;">
+                <div class="calendar-month">
+                    <h5>Enero <span class="invest-high">INVERTIR FUERTE</span></h5>
+                    <p><strong>Promoción:</strong> "New Year, Same Great Tacos" - Lunch $9.99 / Email blast a clientes inactivos / Birria season launch</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Febrero <span class="invest-med">MANTENER</span></h5>
+                    <p><strong>Promoción:</strong> San Valentín "Cena para Dos $60" (fajitas + 2 margaritas + postre) / Reservaciones</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Marzo <span class="invest-low">REDUCIR ADS</span></h5>
+                    <p><strong>Promoción:</strong> Cuaresma Fish Tacos / Spring Break Family Packs / Focus en upselling interno</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Abril <span class="invest-low">REDUCIR ADS</span></h5>
+                    <p><strong>Promoción:</strong> Pre-Cinco de Mayo buzz / Capturar emails / Push catering para eventos de Mayo</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Mayo <span class="invest-peak">UPSELL + CAPTURA</span></h5>
+                    <p><strong>Promoción:</strong> NO GASTAR EN ADS. Focus: Margarita Jumbo push / Capturar datos de todos los clientes / Fotos para usar todo el año</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Junio <span class="invest-low">REDUCIR ADS</span></h5>
+                    <p><strong>Promoción:</strong> Día del Padre "Steak Fajitas + Tequila" / Patio season / Catering graduaciones</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Julio <span class="invest-med">MANTENER</span></h5>
+                    <p><strong>Promoción:</strong> 4 de Julio "Red, White & Green" / Frozen drinks / Outdoor events</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Agosto <span class="invest-med">MANTENER</span></h5>
+                    <p><strong>Promoción:</strong> Back to School Family Packs ToGo / "Beat the Heat" frozen margs</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Septiembre <span class="invest-high">INVERTIR FUERTE</span></h5>
+                    <p><strong>Promoción:</strong> Game Day Central / Beer Buckets $20 / NFL Sundays / Wings + Nachos specials</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Octubre <span class="invest-high">INVERTIR FUERTE</span></h5>
+                    <p><strong>Promoción:</strong> Día de Muertos Auténtico / Halloween Familiar / Quesabirria Push / Catering Halloween parties</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Noviembre <span class="invest-med">MANTENER</span></h5>
+                    <p><strong>Promoción:</strong> Catering Thanksgiving / Holiday Party packages / Gift Card push starts</p>
+                </div>
+                <div class="calendar-month">
+                    <h5>Diciembre <span class="invest-med">MANTENER</span></h5>
+                    <p><strong>Promoción:</strong> Gift Cards (Buy $50 get $10) / NYE packages / Holiday catering</p>
+                </div>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">🔴 Tácticas Específicas para Meses Lentos</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Mes</th>
+                            <th>Índice</th>
+                            <th>Problema</th>
+                            <th>Táctica Principal</th>
+                            <th>Budget</th>
+                            <th>Meta</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Enero</strong></td>
+                            <td>89</td>
+                            <td>Post-fiestas, dinero tight</td>
+                            <td>Lunch Specials $9.99 + Email a inactivos + Birria comfort food</td>
+                            <td>$1,500</td>
+                            <td>+$8K</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Septiembre</strong></td>
+                            <td>93</td>
+                            <td>Vuelta a rutina, olvidan salir</td>
+                            <td>Game Day HQ + Beer Buckets + NFL Sunday Funday</td>
+                            <td>$1,200</td>
+                            <td>+$8K</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Octubre</strong></td>
+                            <td>89</td>
+                            <td>Pre-holidays, saving money</td>
+                            <td>Día de Muertos experience + Halloween familiar + Quesabirria viral</td>
+                            <td>$1,500</td>
+                            <td>+$8K</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- 3. PROGRAMA DE FIDELIZACIÓN -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2 class="section-title">Programa de Fidelización: "La Familia El Patrón"</h2>
+            </div>
+
+            <div class="strategy-box sage">
+                <h4>👨‍👩‍👧‍👦 Diseñado para Familias</h4>
+                <p>No es un programa genérico de puntos. Es un programa que reconoce que las familias vienen regularmente y merecen ser tratadas como familia.</p>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">🏆 Niveles del Programa</h3>
+
+            <div class="tier-grid" style="margin-bottom: 2rem;">
+                <div class="tier-card bronze">
+                    <div class="tier-name">Amigo</div>
+                    <div class="tier-requirement">0-4 visitas/mes</div>
+                    <div class="tier-benefits">
+                        ✓ 1 punto por cada $1<br>
+                        ✓ Birthday postre gratis<br>
+                        ✓ Acceso a ofertas por email<br>
+                        ✓ Kids eat free los martes
+                    </div>
+                </div>
+                <div class="tier-card silver">
+                    <div class="tier-name">Familia</div>
+                    <div class="tier-requirement">5-9 visitas/mes</div>
+                    <div class="tier-benefits">
+                        ✓ 1.5 puntos por cada $1<br>
+                        ✓ 10% off siempre<br>
+                        ✓ Free chips & salsa upgrade<br>
+                        ✓ Priority seating weekends<br>
+                        ✓ Early access a promos
+                    </div>
+                </div>
+                <div class="tier-card gold">
+                    <div class="tier-name">Patrón VIP</div>
+                    <div class="tier-requirement">10+ visitas/mes</div>
+                    <div class="tier-benefits">
+                        ✓ 2 puntos por cada $1<br>
+                        ✓ 15% off siempre<br>
+                        ✓ Free appetizer cada visita<br>
+                        ✓ Exclusive tasting events<br>
+                        ✓ Catering discount 20%<br>
+                        ✓ Reserved "family table"
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">🎁 Recompensas por Puntos</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Puntos</th>
+                            <th>Recompensa</th>
+                            <th>Valor</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>100</td><td>Free Cheese Dip</td><td>$7.50</td></tr>
+                        <tr><td>200</td><td>Free Appetizer (any)</td><td>$12</td></tr>
+                        <tr><td>300</td><td>Free Entrée (up to $15)</td><td>$15</td></tr>
+                        <tr><td>500</td><td>Free Margarita Pitcher</td><td>$25</td></tr>
+                        <tr><td>750</td><td>Free Family Pack ToGo</td><td>$45</td></tr>
+                        <tr><td>1000</td><td>Free Fajitas for 4</td><td>$65</td></tr>
+                        <tr><td>2000</td><td>Private Catering for 10</td><td>$200</td></tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">🎂 Birthday Club (Para Niños)</h3>
+
+            <div class="promo-grid">
+                <div class="promo-card">
+                    <div class="promo-icon">🎈</div>
+                    <div class="promo-title">Birthday Fiesta</div>
+                    <div class="promo-desc">Email automático 1 semana antes del cumpleaños. Postre gratis + foto con sombrero + "Las Mañanitas" del staff.</div>
+                    <div class="promo-metric">
+                        <span>Objetivo: 500 signups año 1</span>
+                        <span>+$25/familia</span>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">🎉</div>
+                    <div class="promo-title">Birthday Party Package</div>
+                    <div class="promo-desc">Upsell: Reserva área privada + decoración + piñata. $15/niño todo incluido.</div>
+                    <div class="promo-metric">
+                        <span>2 fiestas/semana = </span>
+                        <span>+$3K/mes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 4. CRECIMIENTO CATERING & TOGO -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2 class="section-title">Catering & ToGo: El Motor de Crecimiento</h2>
+            </div>
+
+            <div class="strategy-box navy">
+                <h4>🚀 Por Qué Esto es Crítico</h4>
+                <p>El dine-in tiene capacidad limitada. Catering y ToGo NO tienen límite. Es el canal que más crece en la industria (+25% nacional). Aquí es donde El Patrón puede crecer sin construir más mesas.</p>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">📦 Paquetes de Catering</h3>
+
+            <div class="package-grid" style="margin-bottom: 2rem;">
+                <div class="package-card">
+                    <div class="package-header">
+                        <h4>🌮 Taco Bar</h4>
+                    </div>
+                    <div class="package-body">
+                        <div class="package-price">$12 <span>/persona (mín 15)</span></div>
+                        <div class="package-includes">
+                            ✓ 3 proteínas (carne asada, pollo, carnitas)<br>
+                            ✓ Tortillas de maíz y harina<br>
+                            ✓ Arroz y frijoles<br>
+                            ✓ Toppings completos<br>
+                            ✓ Chips y 3 salsas<br>
+                            ✓ Platos y servilletas
+                        </div>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-header">
+                        <h4>🥩 Fajita Bar</h4>
+                    </div>
+                    <div class="package-body">
+                        <div class="package-price">$18 <span>/persona (mín 15)</span></div>
+                        <div class="package-includes">
+                            ✓ Fajitas de res y pollo<br>
+                            ✓ Camarones (+$3/persona)<br>
+                            ✓ Tortillas, arroz, frijoles<br>
+                            ✓ Guacamole, pico, sour cream<br>
+                            ✓ Cheese dip incluido<br>
+                            ✓ Chafing dishes (hot)
+                        </div>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-header">
+                        <h4>🎉 Fiesta Completa</h4>
+                    </div>
+                    <div class="package-body">
+                        <div class="package-price">$25 <span>/persona (mín 25)</span></div>
+                        <div class="package-includes">
+                            ✓ Fajita Bar completo<br>
+                            ✓ Margarita station (non-alc)<br>
+                            ✓ Churros y tres leches<br>
+                            ✓ Decoración básica<br>
+                            ✓ Servicio de setup<br>
+                            ✓ Staff server (2 hrs)
+                        </div>
+                    </div>
+                </div>
+                <div class="package-card">
+                    <div class="package-header">
+                        <h4>💼 Corporate Lunch</h4>
+                    </div>
+                    <div class="package-body">
+                        <div class="package-price">$14 <span>/persona (mín 10)</span></div>
+                        <div class="package-includes">
+                            ✓ Burrito bowls individuales<br>
+                            ✓ 3 opciones de proteína<br>
+                            ✓ Chips y guacamole<br>
+                            ✓ Bebidas incluidas<br>
+                            ✓ Empacado individual<br>
+                            ✓ Delivery gratis 5 millas
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">🏠 Family Packs ToGo</h3>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Pack</th>
+                            <th>Incluye</th>
+                            <th>Precio</th>
+                            <th>Sirve</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Taco Tuesday Pack</strong></td>
+                            <td>12 tacos + arroz + frijoles + chips + salsa</td>
+                            <td>$35</td>
+                            <td>4 personas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fajita Night</strong></td>
+                            <td>Fajitas para 4 + tortillas + sides + cheese dip</td>
+                            <td>$55</td>
+                            <td>4 personas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Fiesta Pack</strong></td>
+                            <td>Mix enchiladas, tacos, quesadillas + sides</td>
+                            <td>$65</td>
+                            <td>6 personas</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Game Day Bundle</strong></td>
+                            <td>Nachos supremos + wings + cheese dip + bucket deal</td>
+                            <td>$45</td>
+                            <td>4-6 personas</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">📈 Plan de Crecimiento Catering</h3>
+
+            <div class="promo-grid">
+                <div class="promo-card">
+                    <div class="promo-icon">📧</div>
+                    <div class="promo-title">Outreach Corporativo</div>
+                    <div class="promo-desc">Lista de 100 empresas locales. Email + llamada + flyer con 15% off primer pedido. 1 contacto/día.</div>
+                    <div class="promo-metric">
+                        <span>Meta: 10 clientes recurrentes</span>
+                        <span>+$4K/mes</span>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">🎓</div>
+                    <div class="promo-title">Eventos de Temporada</div>
+                    <div class="promo-desc">Push fuerte: Graduaciones (May-Jun), Halloween (Oct), Holidays (Nov-Dec), Quinceañeras (todo el año).</div>
+                    <div class="promo-metric">
+                        <span>4 eventos grandes/mes</span>
+                        <span>+$3K/mes</span>
+                    </div>
+                </div>
+                <div class="promo-card">
+                    <div class="promo-icon">⭐</div>
+                    <div class="promo-title">Referral Program</div>
+                    <div class="promo-desc">Cliente refiere catering → $50 crédito. El referido → 10% off primer pedido.</div>
+                    <div class="promo-metric">
+                        <span>5 referrals/mes</span>
+                        <span>+$2K/mes</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- 5. EMAIL MARKETING -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <h2 class="section-title">Email Marketing: El Sistema Completo</h2>
+            </div>
+
+            <div class="strategy-box">
+                <h4>📧 Objetivos del Email</h4>
+                <p><strong>Año 1:</strong> Construir lista de 2,500 emails · <strong>Open rate meta:</strong> 35%+ · <strong>Revenue por email:</strong> $0.50-1.00</p>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">📥 Captura de Emails</h3>
+
+            <div class="table-wrapper" style="margin-bottom: 2rem;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Táctica</th>
+                            <th>Incentivo</th>
+                            <th>Dónde</th>
+                            <th>Emails/mes</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>WiFi Signup</td>
+                            <td>Free WiFi a cambio de email</td>
+                            <td>Restaurante</td>
+                            <td>100+</td>
+                        </tr>
+                        <tr>
+                            <td>Birthday Club</td>
+                            <td>Postre gratis en cumpleaños</td>
+                            <td>Mesa / Receipt</td>
+                            <td>50+</td>
+                        </tr>
+                        <tr>
+                            <td>10% First Order</td>
+                            <td>10% off siguiente visita</td>
+                            <td>Table tent / Receipt</td>
+                            <td>75+</td>
+                        </tr>
+                        <tr>
+                            <td>Catering Inquiry</td>
+                            <td>Quote personalizado</td>
+                            <td>Website / Flyer</td>
+                            <td>20+</td>
+                        </tr>
+                        <tr>
+                            <td>Loyalty Program</td>
+                            <td>Puntos y rewards</td>
+                            <td>POS / App</td>
+                            <td>80+</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">📬 Secuencia de Bienvenida (7 días)</h3>
+
+            <div class="email-sequence">
+                <div class="email-item">
+                    <div class="email-day">Día 0 (Inmediato)</div>
+                    <div class="email-subject">Subject: "¡Bienvenido a la familia! 🎉 Tu regalo está adentro"</div>
+                    <div class="email-content">Entregar cupón prometido + presentar El Patrón + mostrar fotos de comida irresistibles + CTA: "Usa tu cupón esta semana"</div>
+                </div>
+                <div class="email-item">
+                    <div class="email-day">Día 2</div>
+                    <div class="email-subject">Subject: "Los favoritos que debes probar (según nuestros regulars)"</div>
+                    <div class="email-content">Top 3 platos más pedidos + Margarita del mes + Por qué las fajitas son especiales + CTA: "Ver menú completo"</div>
+                </div>
+                <div class="email-item">
+                    <div class="email-day">Día 4</div>
+                    <div class="email-subject">Subject: "¿Cena en casa? Nosotros la llevamos 🚗"</div>
+                    <div class="email-content">Introducir Family Packs + Mostrar opciones ToGo + 10% off primer pedido ToGo + CTA: "Ordenar para llevar"</div>
+                </div>
+                <div class="email-item">
+                    <div class="email-day">Día 7</div>
+                    <div class="email-subject">Subject: "¿Tienes un evento? Hacemos catering increíble"</div>
+                    <div class="email-content">Mostrar fotos de eventos + Presentar paquetes de catering + Testimonial de cliente + CTA: "Pedir cotización gratis"</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">📅 Emails Recurrentes</h3>
+
+            <div class="table-wrapper" style="margin-bottom: 2rem;">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Tipo</th>
+                            <th>Frecuencia</th>
+                            <th>Contenido</th>
+                            <th>Goal</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td><strong>Weekly Special</strong></td>
+                            <td>Martes</td>
+                            <td>Promo de la semana + foto + CTA directo</td>
+                            <td>Tráfico</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Birthday</strong></td>
+                            <td>7 días antes</td>
+                            <td>Postre gratis + invitación a celebrar</td>
+                            <td>Visita</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Win-Back</strong></td>
+                            <td>60 días sin visita</td>
+                            <td>"Te extrañamos" + 15% off</td>
+                            <td>Reactivar</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Loyalty Update</strong></td>
+                            <td>Mensual</td>
+                            <td>Puntos acumulados + siguiente reward</td>
+                            <td>Engagement</td>
+                        </tr>
+                        <tr>
+                            <td><strong>Seasonal</strong></td>
+                            <td>Por evento</td>
+                            <td>Cinco de Mayo, Halloween, etc.</td>
+                            <td>Revenue</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <h3 style="margin-bottom: 1rem; font-size: 1.1rem;">🔄 Secuencia de Reactivación (Clientes Inactivos 60+ días)</h3>
+
+            <div class="email-sequence">
+                <div class="email-item">
+                    <div class="email-day">Email 1</div>
+                    <div class="email-subject">Subject: "¿Todo bien? Te hemos extrañado en El Patrón"</div>
+                    <div class="email-content">Tono personal, no vendedor. "Notamos que no has venido en un tiempo. ¿Todo bien? Queremos que sepas que tu mesa favorita te espera."</div>
+                </div>
+                <div class="email-item">
+                    <div class="email-day">Email 2 (+3 días)</div>
+                    <div class="email-subject">Subject: "Un regalito para que regreses 🎁"</div>
+                    <div class="email-content">15% off tu próxima visita + válido por 2 semanas + mostrar foto de plato favorito (si tenemos data)</div>
+                </div>
+                <div class="email-item">
+                    <div class="email-day">Email 3 (+7 días)</div>
+                    <div class="email-subject">Subject: "Última oportunidad: 20% off expira mañana"</div>
+                    <div class="email-content">Urgencia + aumentar descuento a 20% + "Si ya no quieres recibir emails, lo entendemos" (reduce unsubs paradójicamente)</div>
+                </div>
+            </div>
+
+            <h3 style="margin: 2rem 0 1rem; font-size: 1.1rem;">✍️ Copy de Emails (Ejemplos Listos para Usar)</h3>
+
+            <div class="copy-block">
+                <strong>Subject:</strong> Taco Tuesday llamando... 📞🌮<br><br>
+                Hola [Nombre],<br><br>
+                Los martes en El Patrón son especiales:<br>
+                <strong>→ Tacos a $2.50 c/u</strong><br>
+                <strong>→ Margaritas $6</strong><br>
+                <strong>→ Kids eat FREE (con adulto)</strong><br><br>
+                No necesitas excusa para venir. Pero si la necesitas, aquí está: es martes.<br><br>
+                Te guardamos mesa,<br>
+                El Patrón<br><br>
+                <em>[Botón: Reservar Mesa]</em>
+            </div>
+
+            <div class="copy-block">
+                <strong>Subject:</strong> 🎂 [Nombre], tu cumpleaños merece postre gratis<br><br>
+                ¡Feliz cumpleaños (casi)!<br><br>
+                En El Patrón, los cumpleaños se celebran con:<br>
+                ✓ <strong>Postre GRATIS</strong> para ti<br>
+                ✓ Las Mañanitas del equipo (opcional, pero recomendado)<br>
+                ✓ Una foto con el sombrero gigante (también opcional, pero muy recomendado)<br><br>
+                Solo muestra este email. Válido toda la semana de tu cumple.<br><br>
+                ¡Que lo celebres en grande!<br>
+                La Familia El Patrón<br><br>
+                <em>[Botón: Ver Menú de Postres]</em>
+            </div>
+
+            <div class="copy-block">
+                <strong>Subject:</strong> ¿Fiesta en puerta? Nosotros cocinamos, tú disfrutas 🎉<br><br>
+                Hola [Nombre],<br><br>
+                ¿Graduación? ¿Cumpleaños? ¿Reunión de oficina? ¿O simplemente "porque sí"?<br><br>
+                Nuestro <strong>Fajita Bar</strong> es el hit de toda fiesta:<br>
+                → Fajitas sizzling de res, pollo y camarones<br>
+                → Todo listo para que tus invitados armen sus tacos<br>
+                → Tú te llevas el crédito, nosotros hacemos el trabajo<br><br>
+                <strong>Desde $18/persona</strong> (mínimo 15)<br><br>
+                ¿Quieres cotización? Responde este email con:<br>
+                - Fecha<br>
+                - # de personas<br>
+                - Tipo de evento<br><br>
+                Te respondemos en menos de 24 horas.<br><br>
+                <em>[Botón: Ver Paquetes de Catering]</em>
+            </div>
+        </div>
+
+        <!-- IMPLEMENTACIÓN -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <h2 class="section-title">Plan de Implementación: 90 Días</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Semana</th>
+                            <th>Acción</th>
+                            <th>Responsable</th>
+                            <th>Inversión</th>
+                            <th>Resultado</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr style="background: rgba(201, 162, 39, 0.1);">
+                            <td colspan="5"><strong>MES 1: FUNDAMENTOS</strong></td>
+                        </tr>
+                        <tr>
+                            <td>1-2</td>
+                            <td>Setup email marketing (Mailchimp/Klaviyo) + formularios de captura</td>
+                            <td>Marketing</td>
+                            <td>$50/mes</td>
+                            <td>Sistema listo</td>
+                        </tr>
+                        <tr>
+                            <td>1-2</td>
+                            <td>Entrenar meseros en upselling + scripts + captura de emails</td>
+                            <td>Gerente</td>
+                            <td>$0</td>
+                            <td>+$2/ticket</td>
+                        </tr>
+                        <tr>
+                            <td>2-3</td>
+                            <td>Crear paquetes de catering + flyer + página web</td>
+                            <td>Marketing</td>
+                            <td>$300</td>
+                            <td>Canal nuevo</td>
+                        </tr>
+                        <tr>
+                            <td>3-4</td>
+                            <td>Lanzar programa de fidelización "La Familia"</td>
+                            <td>Gerente + POS</td>
+                            <td>$200</td>
+                            <td>500 signups</td>
+                        </tr>
+                        <tr style="background: rgba(196, 92, 62, 0.1);">
+                            <td colspan="5"><strong>MES 2: CRECIMIENTO</strong></td>
+                        </tr>
+                        <tr>
+                            <td>5-6</td>
+                            <td>Outreach corporativo: 50 empresas contactadas</td>
+                            <td>Ventas</td>
+                            <td>$100</td>
+                            <td>5 clientes</td>
+                        </tr>
+                        <tr>
+                            <td>5-6</td>
+                            <td>Lanzar Birthday Club + promoción en mesas</td>
+                            <td>Marketing</td>
+                            <td>$50</td>
+                            <td>100 signups</td>
+                        </tr>
+                        <tr>
+                            <td>6-8</td>
+                            <td>Alianzas locales: 2 escuelas + 1 liga deportiva</td>
+                            <td>Gerente</td>
+                            <td>$500</td>
+                            <td>3 alianzas</td>
+                        </tr>
+                        <tr>
+                            <td>7-8</td>
+                            <td>Secuencias de email automatizadas activas</td>
+                            <td>Marketing</td>
+                            <td>$0</td>
+                            <td>Automatizado</td>
+                        </tr>
+                        <tr style="background: rgba(122, 158, 126, 0.1);">
+                            <td colspan="5"><strong>MES 3: OPTIMIZACIÓN</strong></td>
+                        </tr>
+                        <tr>
+                            <td>9-10</td>
+                            <td>Analizar qué funciona, doblar inversión en ganadores</td>
+                            <td>Marketing</td>
+                            <td>Variable</td>
+                            <td>ROI data</td>
+                        </tr>
+                        <tr>
+                            <td>9-10</td>
+                            <td>Campaña para mes lento (prep Enero si estamos en Q4)</td>
+                            <td>Marketing</td>
+                            <td>$1,500</td>
+                            <td>+$8K</td>
+                        </tr>
+                        <tr>
+                            <td>11-12</td>
+                            <td>Escalar catering: contratar vendedor part-time si funciona</td>
+                            <td>Gerente</td>
+                            <td>$1,000/mes</td>
+                            <td>+$5K/mes</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="roi-grid" style="margin-top: 2rem;">
+                <div class="roi-card">
+                    <div class="roi-value">$4,200</div>
+                    <div class="roi-label">Inversión Total 90 Días</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">$45K+</div>
+                    <div class="roi-label">Revenue Adicional Proyectado</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">10.7x</div>
+                    <div class="roi-label">ROI Esperado</div>
+                </div>
+                <div class="roi-card">
+                    <div class="roi-value">$186K</div>
+                    <div class="roi-label">Impacto Anual (Year 1)</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- MÉTRICAS -->
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">7</div>
+                <h2 class="section-title">Métricas de Éxito (KPIs)</h2>
+            </div>
+
+            <div class="table-wrapper">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Métrica</th>
+                            <th>Actual</th>
+                            <th>Meta 6 Meses</th>
+                            <th>Meta 12 Meses</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr>
+                            <td>Ticket Promedio</td>
+                            <td>$10.25</td>
+                            <td>$11.50</td>
+                            <td>$12.50</td>
+                        </tr>
+                        <tr>
+                            <td>Email List Size</td>
+                            <td>0</td>
+                            <td>1,500</td>
+                            <td>2,500</td>
+                        </tr>
+                        <tr>
+                            <td>Catering Revenue/mes</td>
+                            <td>~$2K</td>
+                            <td>$5K</td>
+                            <td>$8K</td>
+                        </tr>
+                        <tr>
+                            <td>ToGo Revenue/mes</td>
+                            <td>~$8K</td>
+                            <td>$12K</td>
+                            <td>$15K</td>
+                        </tr>
+                        <tr>
+                            <td>Loyalty Members</td>
+                            <td>0</td>
+                            <td>800</td>
+                            <td>1,500</td>
+                        </tr>
+                        <tr>
+                            <td>Meses Lentos (Ene/Sep/Oct)</td>
+                            <td>-11% vs avg</td>
+                            <td>-5% vs avg</td>
+                            <td>At avg</td>
+                        </tr>
+                        <tr>
+                            <td>Repeat Customer Rate</td>
+                            <td>~40%</td>
+                            <td>50%</td>
+                            <td>60%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </div>
+
+    <div style="text-align: center; padding: 2rem; color: var(--gray); font-size: 0.85rem; border-top: 1px solid var(--light-gray);">
+        <p><strong>El Patrón</strong> - Estrategia de Marketing 2026</p>
+        <p>Familiar · Rápido · Buen Precio · Margaritas & Cerveza</p>
+    </div>
+
+</body>
+</html>

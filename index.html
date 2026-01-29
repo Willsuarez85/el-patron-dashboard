@@ -1,0 +1,1650 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>El Patrón — Dashboard Estratégico 2023-2025</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;600;700&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Paleta El Patrón - basada en website */
+            --patron-orange: #FF6B00;
+            --patron-orange-dark: #E55D00;
+            --patron-orange-light: #FF8533;
+            --patron-cream: #FAF5E8;
+            --patron-cream-dark: #F0E8D8;
+            --patron-black: #1a1a1a;
+            --patron-gold: #C9A227;
+            --patron-green: #4A7C4E;
+            --patron-red: #C45C3E;
+            --patron-gray: #6b7280;
+            --patron-light-gray: #f3f4f6;
+            --shadow-soft: 0 4px 20px rgba(0,0,0,0.08);
+            --shadow-card: 0 2px 12px rgba(0,0,0,0.06);
+            --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'DM Sans', sans-serif;
+            background: var(--patron-cream);
+            color: var(--patron-black);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: var(--patron-orange);
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            z-index: 1000;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .nav-logo {
+            width: 50px;
+            height: 50px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Playfair Display', serif;
+            font-weight: 700;
+            font-size: 0.7rem;
+            color: var(--patron-orange);
+            text-align: center;
+            line-height: 1.1;
+            padding: 5px;
+        }
+
+        .nav-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.75rem;
+            font-weight: 700;
+            color: white;
+            letter-spacing: 2px;
+            text-transform: uppercase;
+        }
+
+        .nav-subtitle {
+            font-size: 0.7rem;
+            color: rgba(255,255,255,0.9);
+            text-transform: uppercase;
+            letter-spacing: 3px;
+        }
+
+        /* Filters */
+        .filters {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .filter-group {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-label {
+            font-size: 0.75rem;
+            color: rgba(255,255,255,0.9);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        select {
+            background: rgba(255,255,255,0.2);
+            border: 1px solid rgba(255,255,255,0.5);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            font-family: 'DM Sans', sans-serif;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        select:hover {
+            background: rgba(255,255,255,0.3);
+        }
+
+        select option {
+            background: var(--patron-black);
+            color: white;
+        }
+
+        /* Main Content */
+        .main {
+            padding-top: 100px;
+            padding-bottom: 3rem;
+        }
+
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 2rem;
+        }
+
+        /* Executive Summary */
+        .executive-summary {
+            background: white;
+            border-radius: 20px;
+            padding: 2.5rem;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-soft);
+            border-left: 6px solid var(--patron-orange);
+        }
+
+        .summary-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 2rem;
+            flex-wrap: wrap;
+            gap: 1rem;
+        }
+
+        .summary-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 2rem;
+            font-weight: 700;
+            color: var(--patron-black);
+        }
+
+        .summary-subtitle {
+            font-size: 1rem;
+            color: var(--patron-gray);
+            margin-top: 0.5rem;
+        }
+
+        .summary-badge {
+            background: var(--patron-green);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 30px;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .summary-stat {
+            text-align: center;
+            padding: 1.5rem;
+            background: var(--patron-cream);
+            border-radius: 12px;
+        }
+
+        .summary-stat-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--patron-orange);
+        }
+
+        .summary-stat-label {
+            font-size: 0.85rem;
+            color: var(--patron-gray);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-top: 0.5rem;
+        }
+
+        .summary-insights {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+        }
+
+        .insight-box {
+            padding: 1.25rem;
+            border-radius: 12px;
+            background: var(--patron-cream);
+        }
+
+        .insight-box.positive {
+            border-left: 4px solid var(--patron-green);
+        }
+
+        .insight-box.warning {
+            border-left: 4px solid var(--patron-orange);
+        }
+
+        .insight-box.negative {
+            border-left: 4px solid var(--patron-red);
+        }
+
+        .insight-icon {
+            font-size: 1.5rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .insight-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .insight-text {
+            font-size: 0.85rem;
+            color: var(--patron-gray);
+        }
+
+        /* Section Headers */
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+            margin-top: 2.5rem;
+        }
+
+        .section-number {
+            width: 36px;
+            height: 36px;
+            background: var(--patron-orange);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1rem;
+            color: white;
+        }
+
+        .section-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: var(--patron-black);
+        }
+
+        .section-line {
+            flex: 1;
+            height: 2px;
+            background: linear-gradient(to right, var(--patron-orange), transparent);
+        }
+
+        /* KPI Cards */
+        .kpi-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .kpi-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+            transition: var(--transition);
+        }
+
+        .kpi-card:hover {
+            transform: translateY(-4px);
+            box-shadow: var(--shadow-soft);
+        }
+
+        .kpi-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--patron-orange);
+        }
+
+        .kpi-card.highlight::before {
+            background: var(--patron-gold);
+        }
+
+        .kpi-card.success::before {
+            background: var(--patron-green);
+        }
+
+        .kpi-card.alert::before {
+            background: var(--patron-red);
+        }
+
+        .kpi-label {
+            font-size: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 1.5px;
+            color: var(--patron-gray);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-value {
+            font-family: 'Playfair Display', serif;
+            font-size: 2.25rem;
+            font-weight: 700;
+            color: var(--patron-black);
+            margin-bottom: 0.5rem;
+        }
+
+        .kpi-detail {
+            font-size: 0.875rem;
+            color: var(--patron-gray);
+        }
+
+        .kpi-trend {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.25rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.75rem;
+            font-weight: 600;
+        }
+
+        .trend-up {
+            background: rgba(74, 124, 78, 0.15);
+            color: var(--patron-green);
+        }
+
+        .trend-down {
+            background: rgba(196, 92, 62, 0.15);
+            color: var(--patron-red);
+        }
+
+        /* Chart Cards */
+        .chart-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-grid-equal {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.75rem;
+            box-shadow: var(--shadow-card);
+        }
+
+        .chart-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 1.5rem;
+        }
+
+        .chart-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.125rem;
+            font-weight: 600;
+            color: var(--patron-black);
+        }
+
+        .chart-subtitle {
+            font-size: 0.8rem;
+            color: var(--patron-gray);
+            margin-top: 0.25rem;
+        }
+
+        .chart-container {
+            position: relative;
+            height: 300px;
+        }
+
+        .chart-container-small {
+            position: relative;
+            height: 250px;
+        }
+
+        /* Heatmap */
+        .heatmap-container {
+            overflow-x: auto;
+        }
+
+        .heatmap {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.8rem;
+        }
+
+        .heatmap th {
+            padding: 0.75rem 0.5rem;
+            text-align: center;
+            font-weight: 600;
+            color: var(--patron-gray);
+            text-transform: uppercase;
+            font-size: 0.7rem;
+            letter-spacing: 1px;
+        }
+
+        .heatmap th:first-child {
+            text-align: left;
+        }
+
+        .heatmap td {
+            padding: 0.6rem 0.5rem;
+            text-align: center;
+            font-weight: 500;
+            border-radius: 4px;
+            transition: var(--transition);
+        }
+
+        .heatmap td:first-child {
+            text-align: left;
+            font-weight: 600;
+            color: var(--patron-black);
+            background: transparent !important;
+        }
+
+        .heatmap tr:hover td {
+            transform: scale(1.02);
+        }
+
+        .heat-very-high { background: #166534; color: white; }
+        .heat-high { background: #22c55e; color: white; }
+        .heat-medium-high { background: #86efac; color: #166534; }
+        .heat-medium { background: #fef9c3; color: #854d0e; }
+        .heat-medium-low { background: #fed7aa; color: #9a3412; }
+        .heat-low { background: #fca5a5; color: #991b1b; }
+        .heat-very-low { background: #ef4444; color: white; }
+
+        /* Category Legend */
+        .category-legend {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 1px solid var(--patron-light-gray);
+        }
+
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-size: 0.8rem;
+        }
+
+        .legend-color {
+            width: 12px;
+            height: 12px;
+            border-radius: 3px;
+        }
+
+        /* Insights Panel */
+        .insights-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .insight-card {
+            background: white;
+            border-radius: 16px;
+            padding: 1.5rem;
+            box-shadow: var(--shadow-card);
+            border-left: 4px solid var(--patron-orange);
+        }
+
+        .insight-card.alert {
+            border-left-color: var(--patron-red);
+        }
+
+        .insight-card.success {
+            border-left-color: var(--patron-green);
+        }
+
+        .insight-card .insight-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+            margin-bottom: 1rem;
+            background: rgba(255, 107, 0, 0.15);
+        }
+
+        .insight-card.alert .insight-icon {
+            background: rgba(196, 92, 62, 0.15);
+        }
+
+        .insight-card.success .insight-icon {
+            background: rgba(74, 124, 78, 0.15);
+        }
+
+        .insight-card .insight-title {
+            font-weight: 600;
+            font-size: 0.95rem;
+            margin-bottom: 0.5rem;
+            color: var(--patron-black);
+        }
+
+        .insight-card .insight-text {
+            font-size: 0.85rem;
+            color: var(--patron-gray);
+            line-height: 1.5;
+        }
+
+        .insight-metric {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--patron-black);
+            margin-top: 0.75rem;
+        }
+
+        /* Action Items */
+        .action-section {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-top: 2rem;
+            box-shadow: var(--shadow-soft);
+        }
+
+        .action-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--patron-black);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .action-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1.5rem;
+        }
+
+        .action-card {
+            padding: 1.5rem;
+            border-radius: 12px;
+            background: var(--patron-cream);
+            border-left: 4px solid var(--patron-orange);
+        }
+
+        .action-card h4 {
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--patron-black);
+        }
+
+        .action-card p {
+            font-size: 0.9rem;
+            color: var(--patron-gray);
+            margin-bottom: 0.75rem;
+        }
+
+        .action-impact {
+            font-size: 0.85rem;
+            font-weight: 600;
+            color: var(--patron-green);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: var(--patron-gray);
+            font-size: 0.8rem;
+            border-top: 1px solid var(--patron-cream-dark);
+            margin-top: 2rem;
+            background: white;
+        }
+
+        .footer-brand {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: var(--patron-orange);
+            margin-bottom: 0.5rem;
+        }
+
+        /* Responsive */
+        @media (max-width: 1200px) {
+            .kpi-grid, .summary-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+            .chart-grid {
+                grid-template-columns: 1fr;
+            }
+            .chart-grid-equal {
+                grid-template-columns: 1fr;
+            }
+            .insights-grid, .summary-insights {
+                grid-template-columns: 1fr;
+            }
+            .action-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .nav {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+            .filters {
+                flex-wrap: wrap;
+                justify-content: center;
+            }
+            .kpi-grid, .summary-grid {
+                grid-template-columns: 1fr;
+            }
+            .container {
+                padding: 0 1rem;
+            }
+            .main {
+                padding-top: 160px;
+            }
+            .summary-stat-value {
+                font-size: 2rem;
+            }
+        }
+
+        /* Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .animate-in {
+            animation: fadeInUp 0.6s ease-out forwards;
+        }
+
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.2s; }
+        .delay-3 { animation-delay: 0.3s; }
+        .delay-4 { animation-delay: 0.4s; }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav">
+        <div class="nav-brand">
+            <div class="nav-logo">EL<br>PATRÓN</div>
+            <div>
+                <div class="nav-title">El Patrón</div>
+                <div class="nav-subtitle">Dashboard Estratégico · Est. 2010</div>
+            </div>
+        </div>
+        <div class="filters">
+            <div class="filter-group">
+                <span class="filter-label">Año</span>
+                <select id="yearFilter" onchange="updateDashboard()">
+                    <option value="all">Todos (2023-2025)</option>
+                    <option value="2023">2023</option>
+                    <option value="2024">2024</option>
+                    <option value="2025">2025</option>
+                </select>
+            </div>
+            <div class="filter-group">
+                <span class="filter-label">Categoría</span>
+                <select id="categoryFilter" onchange="updateDashboard()">
+                    <option value="all">Todas</option>
+                    <option value="FOOD">Food</option>
+                    <option value="LIQUORS">Liquors</option>
+                    <option value="BEER">Beer</option>
+                    <option value="SOFT DRINKS">Soft Drinks</option>
+                    <option value="SEAFOOD">Seafood</option>
+                    <option value="DESSERTS">Desserts</option>
+                    <option value="WINES">Wines</option>
+                </select>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main">
+        <div class="container">
+
+            <!-- Executive Summary -->
+            <div class="executive-summary animate-in">
+                <div class="summary-header">
+                    <div>
+                        <h1 class="summary-title">Resumen Ejecutivo</h1>
+                        <p class="summary-subtitle">Análisis de Ventas · Enero 2023 — Diciembre 2025</p>
+                    </div>
+                    <span class="summary-badge">📊 36 Meses de Data</span>
+                </div>
+
+                <div class="summary-grid">
+                    <div class="summary-stat">
+                        <div class="summary-stat-value">$6.57M</div>
+                        <div class="summary-stat-label">Ingresos Totales</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value">$182.5K</div>
+                        <div class="summary-stat-label">Promedio Mensual</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value">-3.0%</div>
+                        <div class="summary-stat-label">Cambio YoY (2025 vs 2024)</div>
+                    </div>
+                    <div class="summary-stat">
+                        <div class="summary-stat-value">$239.9K</div>
+                        <div class="summary-stat-label">Mejor Mes (May 2024)</div>
+                    </div>
+                </div>
+
+                <div class="summary-insights">
+                    <div class="insight-box positive">
+                        <div class="insight-icon">🎯</div>
+                        <div class="insight-title">Cinco de Mayo = Oro</div>
+                        <div class="insight-text">Mayo genera +29% sobre el promedio. Es el momento de máxima inversión en marketing y capacidad.</div>
+                    </div>
+                    <div class="insight-box warning">
+                        <div class="insight-icon">🍹</div>
+                        <div class="insight-title">Licores Necesita Atención</div>
+                        <div class="insight-text">Caída del 12% YoY en bebidas alcohólicas. Oportunidad: Happy Hour reinventado y promociones de margaritas.</div>
+                    </div>
+                    <div class="insight-box negative">
+                        <div class="insight-icon">📅</div>
+                        <div class="insight-title">Meses Críticos Identificados</div>
+                        <div class="insight-text">Enero, Septiembre y Octubre caen -11% vs promedio. Requieren estrategias específicas.</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- KPI Section -->
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <h2 class="section-title">Métricas Principales</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="kpi-grid">
+                <div class="kpi-card animate-in delay-1">
+                    <div class="kpi-label">Ingresos Totales</div>
+                    <div class="kpi-value" id="kpiTotal">$6.57M</div>
+                    <div class="kpi-detail">36 meses de operación</div>
+                </div>
+                <div class="kpi-card highlight animate-in delay-2">
+                    <div class="kpi-label">Promedio Mensual</div>
+                    <div class="kpi-value" id="kpiAvg">$182.5K</div>
+                    <div class="kpi-detail">Base para proyecciones</div>
+                </div>
+                <div class="kpi-card success animate-in delay-3">
+                    <div class="kpi-label">Mejor Mes</div>
+                    <div class="kpi-value" id="kpiBest">$239.9K</div>
+                    <div class="kpi-detail" id="kpiBestDetail">Mayo 2024 — Cinco de Mayo</div>
+                </div>
+                <div class="kpi-card alert animate-in delay-4">
+                    <div class="kpi-label">Tendencia YoY</div>
+                    <div class="kpi-value" id="kpiTrend">-3.0%</div>
+                    <div class="kpi-detail">2025 vs 2024 <span class="kpi-trend trend-down">↓ Monitorear</span></div>
+                </div>
+            </div>
+
+            <!-- Revenue Trend -->
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <h2 class="section-title">Tendencia de Ingresos</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="chart-grid">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Ingresos Mensuales por Año</div>
+                            <div class="chart-subtitle">Comparativa 2023 vs 2024 vs 2025</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="revenueChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Distribución por Categoría</div>
+                            <div class="chart-subtitle">% del total de ventas</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryPieChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Seasonality Heatmap -->
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <h2 class="section-title">Mapa de Estacionalidad</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Índice de Rendimiento por Categoría y Mes</div>
+                        <div class="chart-subtitle">Base 100 = Promedio de la categoría | Verde = Alto rendimiento | Rojo = Bajo rendimiento</div>
+                    </div>
+                </div>
+                <div class="heatmap-container">
+                    <table class="heatmap" id="heatmapTable">
+                        <!-- Generated by JavaScript -->
+                    </table>
+                </div>
+                <div class="category-legend">
+                    <div class="legend-item"><div class="legend-color heat-very-high"></div> >130 Excepcional</div>
+                    <div class="legend-item"><div class="legend-color heat-high"></div> 110-130 Alto</div>
+                    <div class="legend-item"><div class="legend-color heat-medium-high"></div> 100-110 Sobre promedio</div>
+                    <div class="legend-item"><div class="legend-color heat-medium"></div> 95-100 Normal</div>
+                    <div class="legend-item"><div class="legend-color heat-medium-low"></div> 90-95 Bajo promedio</div>
+                    <div class="legend-item"><div class="legend-color heat-low"></div> 80-90 Bajo</div>
+                    <div class="legend-item"><div class="legend-color heat-very-low"></div> <80 Crítico</div>
+                </div>
+            </div>
+
+            <!-- Category Analysis -->
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <h2 class="section-title">Análisis por Categoría</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="chart-grid-equal">
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Ventas por Categoría</div>
+                            <div class="chart-subtitle">Total acumulado en período seleccionado</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="categoryBarChart"></canvas>
+                    </div>
+                </div>
+                <div class="chart-card">
+                    <div class="chart-header">
+                        <div>
+                            <div class="chart-title">Crecimiento YoY por Categoría</div>
+                            <div class="chart-subtitle">Comparativa año vs año anterior</div>
+                        </div>
+                    </div>
+                    <div class="chart-container">
+                        <canvas id="growthChart"></canvas>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Strategic Insights -->
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <h2 class="section-title">Insights Estratégicos</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="insights-grid">
+                <div class="insight-card success">
+                    <div class="insight-icon">🎯</div>
+                    <div class="insight-title">Cinco de Mayo = Máximo Potencial</div>
+                    <div class="insight-text">Mayo genera 29% más que el promedio. LIQUORS sube 48%. Maximizar marketing, personal y capacidad para este mes.</div>
+                    <div class="insight-metric">+$57K/mayo</div>
+                </div>
+                <div class="insight-card alert">
+                    <div class="insight-icon">⚠️</div>
+                    <div class="insight-title">Licores en Declive</div>
+                    <div class="insight-text">Caída del 12% YoY. Implementar happy hour renovado, promociones de margaritas signature, y eventos temáticos.</div>
+                    <div class="insight-metric">-12% YoY</div>
+                </div>
+                <div class="insight-card">
+                    <div class="insight-icon">📅</div>
+                    <div class="insight-title">Meses que Requieren Estrategia</div>
+                    <div class="insight-text">Enero, Septiembre y Octubre necesitan activaciones: lunch specials, game days, Día de Muertos, promociones back-to-school.</div>
+                    <div class="insight-metric">-11% vs avg</div>
+                </div>
+            </div>
+
+            <!-- Monthly Performance -->
+            <div class="section-header">
+                <div class="section-number">6</div>
+                <h2 class="section-title">Rendimiento Mensual Detallado</h2>
+                <div class="section-line"></div>
+            </div>
+
+            <div class="chart-card">
+                <div class="chart-header">
+                    <div>
+                        <div class="chart-title">Índice de Estacionalidad General</div>
+                        <div class="chart-subtitle">Promedio de todas las categorías por mes (Base 100)</div>
+                    </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="seasonalityChart"></canvas>
+                </div>
+            </div>
+
+            <!-- Action Plan -->
+            <div class="action-section">
+                <h3 class="action-title">🚀 Plan de Acción Recomendado</h3>
+                <div class="action-grid">
+                    <div class="action-card">
+                        <h4>1. Revitalizar Programa de Bar</h4>
+                        <p>Happy Hour reinventado (4-7pm), Margarita Monday, promociones de Cheerwine Margarita como diferenciador local.</p>
+                        <div class="action-impact">Impacto potencial: +$50K-75K/año</div>
+                    </div>
+                    <div class="action-card">
+                        <h4>2. Maximizar Cinco de Mayo</h4>
+                        <p>Inversión agresiva en marketing, capacidad extra, menú especial, reservaciones anticipadas, catering corporativo.</p>
+                        <div class="action-impact">Impacto potencial: +$20K adicional en mayo</div>
+                    </div>
+                    <div class="action-card">
+                        <h4>3. Activar Meses Bajos</h4>
+                        <p>Enero: New Year specials. Septiembre: Back to school family deals. Octubre: Día de Muertos celebration.</p>
+                        <div class="action-impact">Impacto potencial: +$30K-50K/año</div>
+                    </div>
+                    <div class="action-card">
+                        <h4>4. Programa de Catering</h4>
+                        <p>Solo 4% de ventas vs 10-15% benchmark. Crear menú de catering, outreach corporativo, eventos locales.</p>
+                        <div class="action-impact">Impacto potencial: +$120K-220K/año</div>
+                    </div>
+                </div>
+            </div>
+
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="footer-brand">El Patrón Mexican Grill & Cantina</div>
+        <p>Dashboard Estratégico | Datos: Enero 2023 — Diciembre 2025 | Preparado por Simplicity Agency</p>
+    </footer>
+
+    <script>
+        // Raw data from CSV - Complete 36 months
+        const rawData = [
+            {year:2023,month:1,category:"BEER",sales:11986.12,gross:186907.63},
+            {year:2023,month:1,category:"DESSERTS",sales:991.22,gross:186907.63},
+            {year:2023,month:1,category:"FOOD",sales:126993.38,gross:186907.63},
+            {year:2023,month:1,category:"LIQUORS",sales:28285.36,gross:186907.63},
+            {year:2023,month:1,category:"SEAFOOD",sales:5915.87,gross:186907.63},
+            {year:2023,month:1,category:"SOFT DRINKS",sales:12322.95,gross:186907.63},
+            {year:2023,month:1,category:"WINES",sales:543.86,gross:186907.63},
+            {year:2023,month:2,category:"BEER",sales:11206.89,gross:180121.07},
+            {year:2023,month:2,category:"DESSERTS",sales:869.58,gross:180121.07},
+            {year:2023,month:2,category:"FOOD",sales:119175.22,gross:180121.07},
+            {year:2023,month:2,category:"LIQUORS",sales:31790.46,gross:180121.07},
+            {year:2023,month:2,category:"SEAFOOD",sales:5006.94,gross:180121.07},
+            {year:2023,month:2,category:"SOFT DRINKS",sales:11558.74,gross:180121.07},
+            {year:2023,month:2,category:"WINES",sales:621.83,gross:180121.07},
+            {year:2023,month:3,category:"BEER",sales:13890.82,gross:202652.26},
+            {year:2023,month:3,category:"DESSERTS",sales:840.4,gross:202652.26},
+            {year:2023,month:3,category:"FOOD",sales:133773.57,gross:202652.26},
+            {year:2023,month:3,category:"LIQUORS",sales:35676.75,gross:202652.26},
+            {year:2023,month:3,category:"SEAFOOD",sales:5758.13,gross:202652.26},
+            {year:2023,month:3,category:"SOFT DRINKS",sales:12175.79,gross:202652.26},
+            {year:2023,month:3,category:"WINES",sales:710.78,gross:202652.26},
+            {year:2023,month:4,category:"BEER",sales:13515.33,gross:198581.64},
+            {year:2023,month:4,category:"DESSERTS",sales:896.51,gross:198581.64},
+            {year:2023,month:4,category:"FOOD",sales:135812.98,gross:198581.64},
+            {year:2023,month:4,category:"LIQUORS",sales:30735.28,gross:198581.64},
+            {year:2023,month:4,category:"SEAFOOD",sales:5887.99,gross:198581.64},
+            {year:2023,month:4,category:"SOFT DRINKS",sales:11238.65,gross:198581.64},
+            {year:2023,month:4,category:"WINES",sales:642.81,gross:198581.64},
+            {year:2023,month:5,category:"BEER",sales:14589.23,gross:236678.84},
+            {year:2023,month:5,category:"DESSERTS",sales:952.22,gross:236678.84},
+            {year:2023,month:5,category:"FOOD",sales:156243.68,gross:236678.84},
+            {year:2023,month:5,category:"LIQUORS",sales:45197.15,gross:236678.84},
+            {year:2023,month:5,category:"SEAFOOD",sales:6166.3,gross:236678.84},
+            {year:2023,month:5,category:"SOFT DRINKS",sales:13057.8,gross:236678.84},
+            {year:2023,month:5,category:"WINES",sales:651.68,gross:236678.84},
+            {year:2023,month:6,category:"BEER",sales:10943.11,gross:187040.57},
+            {year:2023,month:6,category:"DESSERTS",sales:810.12,gross:187040.57},
+            {year:2023,month:6,category:"FOOD",sales:126626.16,gross:187040.57},
+            {year:2023,month:6,category:"LIQUORS",sales:30698.64,gross:187040.57},
+            {year:2023,month:6,category:"SEAFOOD",sales:5098.57,gross:187040.57},
+            {year:2023,month:6,category:"SOFT DRINKS",sales:12394.65,gross:187040.57},
+            {year:2023,month:6,category:"WINES",sales:622.86,gross:187040.57},
+            {year:2023,month:7,category:"BEER",sales:11489.84,gross:186479.52},
+            {year:2023,month:7,category:"DESSERTS",sales:678.9,gross:186479.52},
+            {year:2023,month:7,category:"FOOD",sales:125690.14,gross:186479.52},
+            {year:2023,month:7,category:"LIQUORS",sales:29804.13,gross:186479.52},
+            {year:2023,month:7,category:"SEAFOOD",sales:6053.2,gross:186479.52},
+            {year:2023,month:7,category:"SOFT DRINKS",sales:12290.9,gross:186479.52},
+            {year:2023,month:7,category:"WINES",sales:604.88,gross:186479.52},
+            {year:2023,month:8,category:"BEER",sales:10134.4,gross:174568.81},
+            {year:2023,month:8,category:"DESSERTS",sales:571.81,gross:174568.81},
+            {year:2023,month:8,category:"FOOD",sales:120756.16,gross:174568.81},
+            {year:2023,month:8,category:"LIQUORS",sales:26682.57,gross:174568.81},
+            {year:2023,month:8,category:"SEAFOOD",sales:4867.86,gross:174568.81},
+            {year:2023,month:8,category:"SOFT DRINKS",sales:11081.5,gross:174568.81},
+            {year:2023,month:8,category:"WINES",sales:603.83,gross:174568.81},
+            {year:2023,month:9,category:"BEER",sales:10451.54,gross:176679.47},
+            {year:2023,month:9,category:"DESSERTS",sales:805.23,gross:176679.47},
+            {year:2023,month:9,category:"FOOD",sales:122159.39,gross:176679.47},
+            {year:2023,month:9,category:"LIQUORS",sales:27778.57,gross:176679.47},
+            {year:2023,month:9,category:"SEAFOOD",sales:4116.69,gross:176679.47},
+            {year:2023,month:9,category:"SOFT DRINKS",sales:10968.35,gross:176679.47},
+            {year:2023,month:9,category:"WINES",sales:529.87,gross:176679.47},
+            {year:2023,month:10,category:"BEER",sales:9029.66,gross:163012.14},
+            {year:2023,month:10,category:"DESSERTS",sales:639.14,gross:163012.14},
+            {year:2023,month:10,category:"FOOD",sales:113396.88,gross:163012.14},
+            {year:2023,month:10,category:"LIQUORS",sales:24222.54,gross:163012.14},
+            {year:2023,month:10,category:"SEAFOOD",sales:4235.03,gross:163012.14},
+            {year:2023,month:10,category:"SOFT DRINKS",sales:10967.05,gross:163012.14},
+            {year:2023,month:10,category:"WINES",sales:637.75,gross:163012.14},
+            {year:2023,month:11,category:"BEER",sales:9830.45,gross:158097.51},
+            {year:2023,month:11,category:"DESSERTS",sales:566.7,gross:158097.51},
+            {year:2023,month:11,category:"FOOD",sales:109023.0,gross:158097.51},
+            {year:2023,month:11,category:"LIQUORS",sales:24241.74,gross:158097.51},
+            {year:2023,month:11,category:"SEAFOOD",sales:3593.39,gross:158097.51},
+            {year:2023,month:11,category:"SOFT DRINKS",sales:10317.8,gross:158097.51},
+            {year:2023,month:11,category:"WINES",sales:608.89,gross:158097.51},
+            {year:2023,month:12,category:"BEER",sales:11344.23,gross:177977.31},
+            {year:2023,month:12,category:"DESSERTS",sales:1019.78,gross:177977.31},
+            {year:2023,month:12,category:"FOOD",sales:123426.99,gross:177977.31},
+            {year:2023,month:12,category:"LIQUORS",sales:26192.36,gross:177977.31},
+            {year:2023,month:12,category:"SEAFOOD",sales:3960.18,gross:177977.31},
+            {year:2023,month:12,category:"SOFT DRINKS",sales:11173.3,gross:177977.31},
+            {year:2023,month:12,category:"WINES",sales:685.83,gross:177977.31},
+            {year:2024,month:1,category:"BEER",sales:8430.44,gross:149652.01},
+            {year:2024,month:1,category:"DESSERTS",sales:832.63,gross:149652.01},
+            {year:2024,month:1,category:"FOOD",sales:107104.42,gross:149652.01},
+            {year:2024,month:1,category:"LIQUORS",sales:20385.53,gross:149652.01},
+            {year:2024,month:1,category:"SEAFOOD",sales:3169.84,gross:149652.01},
+            {year:2024,month:1,category:"SOFT DRINKS",sales:9458.9,gross:149652.01},
+            {year:2024,month:1,category:"WINES",sales:383.96,gross:149652.01},
+            {year:2024,month:2,category:"BEER",sales:10221.15,gross:164143.13},
+            {year:2024,month:2,category:"DESSERTS",sales:761.5,gross:164143.13},
+            {year:2024,month:2,category:"FOOD",sales:113873.15,gross:164143.13},
+            {year:2024,month:2,category:"LIQUORS",sales:25382.38,gross:164143.13},
+            {year:2024,month:2,category:"SEAFOOD",sales:3711.96,gross:164143.13},
+            {year:2024,month:2,category:"SOFT DRINKS",sales:9804.3,gross:164143.13},
+            {year:2024,month:2,category:"WINES",sales:491.93,gross:164143.13},
+            {year:2024,month:3,category:"BEER",sales:12022.72,gross:192420.82},
+            {year:2024,month:3,category:"DESSERTS",sales:1073.79,gross:192420.82},
+            {year:2024,month:3,category:"FOOD",sales:133214.99,gross:192420.82},
+            {year:2024,month:3,category:"LIQUORS",sales:29019.48,gross:192420.82},
+            {year:2024,month:3,category:"SEAFOOD",sales:5706.4,gross:192420.82},
+            {year:2024,month:3,category:"SOFT DRINKS",sales:11016.58,gross:192420.82},
+            {year:2024,month:3,category:"WINES",sales:509.83,gross:192420.82},
+            {year:2024,month:4,category:"BEER",sales:10869.16,gross:184477.72},
+            {year:2024,month:4,category:"DESSERTS",sales:831.3,gross:184477.72},
+            {year:2024,month:4,category:"FOOD",sales:131210.24,gross:184477.72},
+            {year:2024,month:4,category:"LIQUORS",sales:26330.93,gross:184477.72},
+            {year:2024,month:4,category:"SEAFOOD",sales:4849.3,gross:184477.72},
+            {year:2024,month:4,category:"SOFT DRINKS",sales:10058.7,gross:184477.72},
+            {year:2024,month:4,category:"WINES",sales:436.88,gross:184477.72},
+            {year:2024,month:5,category:"BEER",sales:14349.2,gross:239931.05},
+            {year:2024,month:5,category:"DESSERTS",sales:950.72,gross:239931.05},
+            {year:2024,month:5,category:"FOOD",sales:168918.0,gross:239931.05},
+            {year:2024,month:5,category:"LIQUORS",sales:38613.13,gross:239931.05},
+            {year:2024,month:5,category:"SEAFOOD",sales:6055.68,gross:239931.05},
+            {year:2024,month:5,category:"SOFT DRINKS",sales:10679.25,gross:239931.05},
+            {year:2024,month:5,category:"WINES",sales:499.38,gross:239931.05},
+            {year:2024,month:6,category:"BEER",sales:11909.91,gross:198233.43},
+            {year:2024,month:6,category:"DESSERTS",sales:938.09,gross:198233.43},
+            {year:2024,month:6,category:"FOOD",sales:140354.93,gross:198233.43},
+            {year:2024,month:6,category:"LIQUORS",sales:28035.21,gross:198233.43},
+            {year:2024,month:6,category:"SEAFOOD",sales:5913.89,gross:198233.43},
+            {year:2024,month:6,category:"SOFT DRINKS",sales:10693.06,gross:198233.43},
+            {year:2024,month:6,category:"WINES",sales:511.85,gross:198233.43},
+            {year:2024,month:7,category:"BEER",sales:10456.13,gross:180040.69},
+            {year:2024,month:7,category:"DESSERTS",sales:576.97,gross:180040.69},
+            {year:2024,month:7,category:"FOOD",sales:131442.58,gross:180040.69},
+            {year:2024,month:7,category:"LIQUORS",sales:22320.86,gross:180040.69},
+            {year:2024,month:7,category:"SEAFOOD",sales:5123.01,gross:180040.69},
+            {year:2024,month:7,category:"SOFT DRINKS",sales:9822.9,gross:180040.69},
+            {year:2024,month:7,category:"WINES",sales:434.82,gross:180040.69},
+            {year:2024,month:8,category:"BEER",sales:11443.05,gross:189682.25},
+            {year:2024,month:8,category:"DESSERTS",sales:791.38,gross:189682.25},
+            {year:2024,month:8,category:"FOOD",sales:134581.15,gross:189682.25},
+            {year:2024,month:8,category:"LIQUORS",sales:27774.16,gross:189682.25},
+            {year:2024,month:8,category:"SEAFOOD",sales:4955.45,gross:189682.25},
+            {year:2024,month:8,category:"SOFT DRINKS",sales:9845.9,gross:189682.25},
+            {year:2024,month:8,category:"WINES",sales:414.92,gross:189682.25},
+            {year:2024,month:9,category:"BEER",sales:8482.26,gross:160628.59},
+            {year:2024,month:9,category:"DESSERTS",sales:494.51,gross:160628.59},
+            {year:2024,month:9,category:"FOOD",sales:116630.12,gross:160628.59},
+            {year:2024,month:9,category:"LIQUORS",sales:21855.68,gross:160628.59},
+            {year:2024,month:9,category:"SEAFOOD",sales:4251.39,gross:160628.59},
+            {year:2024,month:9,category:"SOFT DRINKS",sales:8640.3,gross:160628.59},
+            {year:2024,month:9,category:"WINES",sales:392.9,gross:160628.59},
+            {year:2024,month:10,category:"BEER",sales:11304.4,gross:183379.5},
+            {year:2024,month:10,category:"DESSERTS",sales:657.0,gross:183379.5},
+            {year:2024,month:10,category:"FOOD",sales:128925.82,gross:183379.5},
+            {year:2024,month:10,category:"LIQUORS",sales:27857.06,gross:183379.5},
+            {year:2024,month:10,category:"SEAFOOD",sales:4556.85,gross:183379.5},
+            {year:2024,month:10,category:"SOFT DRINKS",sales:9704.11,gross:183379.5},
+            {year:2024,month:10,category:"WINES",sales:484.92,gross:183379.5},
+            {year:2024,month:11,category:"BEER",sales:10770.12,gross:181163.36},
+            {year:2024,month:11,category:"DESSERTS",sales:739.72,gross:181163.36},
+            {year:2024,month:11,category:"FOOD",sales:130432.94,gross:181163.36},
+            {year:2024,month:11,category:"LIQUORS",sales:24907.1,gross:181163.36},
+            {year:2024,month:11,category:"SEAFOOD",sales:4388.34,gross:181163.36},
+            {year:2024,month:11,category:"SOFT DRINKS",sales:9441.7,gross:181163.36},
+            {year:2024,month:11,category:"WINES",sales:585.84,gross:181163.36},
+            {year:2024,month:12,category:"BEER",sales:11143.23,gross:179623.85},
+            {year:2024,month:12,category:"DESSERTS",sales:528.98,gross:179623.85},
+            {year:2024,month:12,category:"FOOD",sales:128426.56,gross:179623.85},
+            {year:2024,month:12,category:"LIQUORS",sales:25060.62,gross:179623.85},
+            {year:2024,month:12,category:"SEAFOOD",sales:4445.62,gross:179623.85},
+            {year:2024,month:12,category:"SOFT DRINKS",sales:9588.15,gross:179623.85},
+            {year:2024,month:12,category:"WINES",sales:532.86,gross:179623.85},
+            {year:2025,month:1,category:"BEER",sales:8892.41,gross:152472.84},
+            {year:2025,month:1,category:"DESSERTS",sales:393.65,gross:152472.84},
+            {year:2025,month:1,category:"FOOD",sales:110278.27,gross:152472.84},
+            {year:2025,month:1,category:"LIQUORS",sales:19786.25,gross:152472.84},
+            {year:2025,month:1,category:"SEAFOOD",sales:4009.42,gross:152472.84},
+            {year:2025,month:1,category:"SOFT DRINKS",sales:8642.2,gross:152472.84},
+            {year:2025,month:1,category:"WINES",sales:570.84,gross:152472.84},
+            {year:2025,month:2,category:"BEER",sales:9123.25,gross:163370.63},
+            {year:2025,month:2,category:"DESSERTS",sales:459.78,gross:163370.63},
+            {year:2025,month:2,category:"FOOD",sales:119837.37,gross:163370.63},
+            {year:2025,month:2,category:"LIQUORS",sales:21808.53,gross:163370.63},
+            {year:2025,month:2,category:"SEAFOOD",sales:4045.79,gross:163370.63},
+            {year:2025,month:2,category:"SOFT DRINKS",sales:8574.55,gross:163370.63},
+            {year:2025,month:2,category:"WINES",sales:411.92,gross:163370.63},
+            {year:2025,month:3,category:"BEER",sales:11608.15,gross:203659.84},
+            {year:2025,month:3,category:"DESSERTS",sales:703.84,gross:203659.84},
+            {year:2025,month:3,category:"FOOD",sales:147004.82,gross:203659.84},
+            {year:2025,month:3,category:"LIQUORS",sales:29358.22,gross:203659.84},
+            {year:2025,month:3,category:"SEAFOOD",sales:5146.88,gross:203659.84},
+            {year:2025,month:3,category:"SOFT DRINKS",sales:10148.07,gross:203659.84},
+            {year:2025,month:3,category:"WINES",sales:529.87,gross:203659.84},
+            {year:2025,month:4,category:"BEER",sales:11513.94,gross:202998.18},
+            {year:2025,month:4,category:"DESSERTS",sales:871.15,gross:202998.18},
+            {year:2025,month:4,category:"FOOD",sales:146693.61,gross:202998.18},
+            {year:2025,month:4,category:"LIQUORS",sales:28236.6,gross:202998.18},
+            {year:2025,month:4,category:"SEAFOOD",sales:5008.07,gross:202998.18},
+            {year:2025,month:4,category:"SOFT DRINKS",sales:10937.73,gross:202998.18},
+            {year:2025,month:4,category:"WINES",sales:518.58,gross:202998.18},
+            {year:2025,month:5,category:"BEER",sales:12585.66,gross:230227.52},
+            {year:2025,month:5,category:"DESSERTS",sales:911.33,gross:230227.52},
+            {year:2025,month:5,category:"FOOD",sales:164581.21,gross:230227.52},
+            {year:2025,month:5,category:"LIQUORS",sales:34734.01,gross:230227.52},
+            {year:2025,month:5,category:"SEAFOOD",sales:5190.17,gross:230227.52},
+            {year:2025,month:5,category:"SOFT DRINKS",sales:12265.23,gross:230227.52},
+            {year:2025,month:5,category:"WINES",sales:766.3,gross:230227.52},
+            {year:2025,month:6,category:"BEER",sales:10495.09,gross:191468.8},
+            {year:2025,month:6,category:"DESSERTS",sales:600.25,gross:191468.8},
+            {year:2025,month:6,category:"FOOD",sales:139697.66,gross:191468.8},
+            {year:2025,month:6,category:"LIQUORS",sales:25097.97,gross:191468.8},
+            {year:2025,month:6,category:"SEAFOOD",sales:5713.85,gross:191468.8},
+            {year:2025,month:6,category:"SOFT DRINKS",sales:10107.35,gross:191468.8},
+            {year:2025,month:6,category:"WINES",sales:561.3,gross:191468.8},
+            {year:2025,month:7,category:"BEER",sales:10394.69,gross:162728.45},
+            {year:2025,month:7,category:"DESSERTS",sales:652.83,gross:162728.45},
+            {year:2025,month:7,category:"FOOD",sales:119243.79,gross:162728.45},
+            {year:2025,month:7,category:"LIQUORS",sales:19388.87,gross:162728.45},
+            {year:2025,month:7,category:"SEAFOOD",sales:4235.9,gross:162728.45},
+            {year:2025,month:7,category:"SOFT DRINKS",sales:9148.55,gross:162728.45},
+            {year:2025,month:7,category:"WINES",sales:343.19,gross:162728.45},
+            {year:2025,month:8,category:"BEER",sales:11319.6,gross:184286.75},
+            {year:2025,month:8,category:"DESSERTS",sales:776.82,gross:184286.75},
+            {year:2025,month:8,category:"FOOD",sales:133843.49,gross:184286.75},
+            {year:2025,month:8,category:"LIQUORS",sales:23070.12,gross:184286.75},
+            {year:2025,month:8,category:"SEAFOOD",sales:5201.1,gross:184286.75},
+            {year:2025,month:8,category:"SOFT DRINKS",sales:10241.21,gross:184286.75},
+            {year:2025,month:8,category:"WINES",sales:619.08,gross:184286.75},
+            {year:2025,month:9,category:"BEER",sales:9280.82,gross:169588.39},
+            {year:2025,month:9,category:"DESSERTS",sales:796.1,gross:169588.39},
+            {year:2025,month:9,category:"FOOD",sales:126580.02,gross:169588.39},
+            {year:2025,month:9,category:"LIQUORS",sales:19334.02,gross:169588.39},
+            {year:2025,month:9,category:"SEAFOOD",sales:4139.94,gross:169588.39},
+            {year:2025,month:9,category:"SOFT DRINKS",sales:9771.62,gross:169588.39},
+            {year:2025,month:9,category:"WINES",sales:515.41,gross:169588.39},
+            {year:2025,month:10,category:"BEER",sales:8291.49,gross:139282.13},
+            {year:2025,month:10,category:"DESSERTS",sales:613.08,gross:139282.13},
+            {year:2025,month:10,category:"FOOD",sales:98692.1,gross:139282.13},
+            {year:2025,month:10,category:"LIQUORS",sales:18640.48,gross:139282.13},
+            {year:2025,month:10,category:"SEAFOOD",sales:3768.19,gross:139282.13},
+            {year:2025,month:10,category:"SOFT DRINKS",sales:8859.61,gross:139282.13},
+            {year:2025,month:10,category:"WINES",sales:417.18,gross:139282.13},
+            {year:2025,month:11,category:"BEER",sales:9323.53,gross:163842.2},
+            {year:2025,month:11,category:"FOOD",sales:123481.36,gross:163842.2},
+            {year:2025,month:11,category:"LIQUORS",sales:19811.3,gross:163842.2},
+            {year:2025,month:11,category:"SOFT DRINKS",sales:10145.53,gross:163842.2},
+            {year:2025,month:11,category:"WINES",sales:396.48,gross:163842.2},
+            {year:2025,month:12,category:"BEER",sales:10968.66,gross:172297.45},
+            {year:2025,month:12,category:"FOOD",sales:129373.62,gross:172297.45},
+            {year:2025,month:12,category:"LIQUORS",sales:21035.59,gross:172297.45},
+            {year:2025,month:12,category:"SOFT DRINKS",sales:10110.59,gross:172297.45},
+            {year:2025,month:12,category:"WINES",sales:440.49,gross:172297.45}
+        ];
+
+        const monthNames = ['Ene', 'Feb', 'Mar', 'Abr', 'May', 'Jun', 'Jul', 'Ago', 'Sep', 'Oct', 'Nov', 'Dic'];
+        const categories = ['FOOD', 'LIQUORS', 'BEER', 'SOFT DRINKS', 'SEAFOOD', 'DESSERTS', 'WINES'];
+        const categoryColors = {
+            'FOOD': '#FF6B00',
+            'LIQUORS': '#C45C3E',
+            'BEER': '#C9A227',
+            'SOFT DRINKS': '#4A7C4E',
+            'SEAFOOD': '#2c3e50',
+            'DESSERTS': '#a855f7',
+            'WINES': '#be123c'
+        };
+
+        let revenueChart, categoryPieChart, categoryBarChart, growthChart, seasonalityChart;
+
+        // Initialize Dashboard
+        function initDashboard() {
+            updateDashboard();
+        }
+
+        function getFilteredData() {
+            const yearFilter = document.getElementById('yearFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+
+            let filtered = [...rawData];
+
+            if (yearFilter !== 'all') {
+                filtered = filtered.filter(d => d.year === parseInt(yearFilter));
+            }
+
+            if (categoryFilter !== 'all') {
+                filtered = filtered.filter(d => d.category === categoryFilter);
+            }
+
+            return filtered;
+        }
+
+        function updateDashboard() {
+            const filtered = getFilteredData();
+            const yearFilter = document.getElementById('yearFilter').value;
+            const categoryFilter = document.getElementById('categoryFilter').value;
+
+            updateKPIs(filtered, yearFilter);
+            updateRevenueChart(yearFilter, categoryFilter);
+            updateCategoryPieChart(filtered);
+            updateCategoryBarChart(filtered);
+            updateGrowthChart();
+            updateHeatmap();
+            updateSeasonalityChart();
+        }
+
+        function updateKPIs(data, yearFilter) {
+            const monthlyTotals = {};
+            rawData.forEach(d => {
+                const key = `${d.year}-${d.month}`;
+                if (!monthlyTotals[key]) monthlyTotals[key] = { year: d.year, month: d.month, total: 0 };
+                monthlyTotals[key].total += d.sales;
+            });
+
+            const totalsArray = Object.values(monthlyTotals);
+
+            let filteredTotals = totalsArray;
+            if (yearFilter !== 'all') {
+                filteredTotals = totalsArray.filter(t => t.year === parseInt(yearFilter));
+            }
+
+            const total = filteredTotals.reduce((sum, t) => sum + t.total, 0);
+            const avg = total / filteredTotals.length;
+            const best = filteredTotals.reduce((max, t) => t.total > max.total ? t : max, filteredTotals[0]);
+
+            const year2024Total = totalsArray.filter(t => t.year === 2024).reduce((s, t) => s + t.total, 0);
+            const year2025Total = totalsArray.filter(t => t.year === 2025).reduce((s, t) => s + t.total, 0);
+            const yoyChange = ((year2025Total - year2024Total) / year2024Total * 100).toFixed(1);
+
+            document.getElementById('kpiTotal').textContent = formatCurrency(total);
+            document.getElementById('kpiAvg').textContent = formatCurrency(avg);
+            document.getElementById('kpiBest').textContent = formatCurrency(best.total);
+            document.getElementById('kpiBestDetail').textContent = `${monthNames[best.month - 1]} ${best.year}`;
+            document.getElementById('kpiTrend').textContent = `${yoyChange}%`;
+        }
+
+        function formatCurrency(value) {
+            if (value >= 1000000) {
+                return '$' + (value / 1000000).toFixed(2) + 'M';
+            } else if (value >= 1000) {
+                return '$' + (value / 1000).toFixed(1) + 'K';
+            }
+            return '$' + value.toFixed(0);
+        }
+
+        function updateRevenueChart(yearFilter, categoryFilter) {
+            const ctx = document.getElementById('revenueChart').getContext('2d');
+
+            if (revenueChart) revenueChart.destroy();
+
+            const years = yearFilter === 'all' ? [2023, 2024, 2025] : [parseInt(yearFilter)];
+            const datasets = [];
+            const colors = ['#FF6B00', '#C45C3E', '#4A7C4E'];
+
+            years.forEach((year, idx) => {
+                const monthlyData = [];
+                for (let m = 1; m <= 12; m++) {
+                    let monthData = rawData.filter(d => d.year === year && d.month === m);
+                    if (categoryFilter !== 'all') {
+                        monthData = monthData.filter(d => d.category === categoryFilter);
+                    }
+                    const total = monthData.reduce((sum, d) => sum + d.sales, 0);
+                    monthlyData.push(total || null);
+                }
+
+                datasets.push({
+                    label: year.toString(),
+                    data: monthlyData,
+                    borderColor: colors[idx],
+                    backgroundColor: colors[idx] + '20',
+                    borderWidth: 3,
+                    fill: true,
+                    tension: 0.4,
+                    pointRadius: 4,
+                    pointHoverRadius: 6
+                });
+            });
+
+            revenueChart = new Chart(ctx, {
+                type: 'line',
+                data: { labels: monthNames, datasets },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    interaction: { intersect: false, mode: 'index' },
+                    plugins: {
+                        legend: { position: 'top', labels: { usePointStyle: true, padding: 20 } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.dataset.label}: ${formatCurrency(ctx.raw)}`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            ticks: { callback: v => formatCurrency(v) },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateCategoryPieChart(data) {
+            const ctx = document.getElementById('categoryPieChart').getContext('2d');
+
+            if (categoryPieChart) categoryPieChart.destroy();
+
+            const categoryTotals = {};
+            categories.forEach(cat => categoryTotals[cat] = 0);
+
+            data.forEach(d => {
+                if (categories.includes(d.category)) {
+                    categoryTotals[d.category] += d.sales;
+                }
+            });
+
+            const total = Object.values(categoryTotals).reduce((s, v) => s + v, 0);
+
+            categoryPieChart = new Chart(ctx, {
+                type: 'doughnut',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        data: categories.map(c => categoryTotals[c]),
+                        backgroundColor: categories.map(c => categoryColors[c]),
+                        borderWidth: 2,
+                        borderColor: '#fff'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { position: 'right', labels: { padding: 15, usePointStyle: true } },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => {
+                                    const pct = ((ctx.raw / total) * 100).toFixed(1);
+                                    return `${ctx.label}: ${formatCurrency(ctx.raw)} (${pct}%)`;
+                                }
+                            }
+                        }
+                    }
+                }
+            });
+        }
+
+        function updateCategoryBarChart(data) {
+            const ctx = document.getElementById('categoryBarChart').getContext('2d');
+
+            if (categoryBarChart) categoryBarChart.destroy();
+
+            const categoryTotals = {};
+            categories.forEach(cat => categoryTotals[cat] = 0);
+
+            data.forEach(d => {
+                if (categories.includes(d.category)) {
+                    categoryTotals[d.category] += d.sales;
+                }
+            });
+
+            categoryBarChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: categories,
+                    datasets: [{
+                        label: 'Ventas Totales',
+                        data: categories.map(c => categoryTotals[c]),
+                        backgroundColor: categories.map(c => categoryColors[c] + 'CC'),
+                        borderColor: categories.map(c => categoryColors[c]),
+                        borderWidth: 2,
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => formatCurrency(ctx.raw)
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: true,
+                            ticks: { callback: v => formatCurrency(v) },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateGrowthChart() {
+            const ctx = document.getElementById('growthChart').getContext('2d');
+
+            if (growthChart) growthChart.destroy();
+
+            const growth = {};
+            categories.forEach(cat => {
+                const y2024 = rawData.filter(d => d.year === 2024 && d.category === cat).reduce((s, d) => s + d.sales, 0);
+                const y2025 = rawData.filter(d => d.year === 2025 && d.category === cat).reduce((s, d) => s + d.sales, 0);
+                growth[cat] = y2024 > 0 ? ((y2025 - y2024) / y2024 * 100) : 0;
+            });
+
+            const sortedCats = [...categories].sort((a, b) => growth[b] - growth[a]);
+
+            growthChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: sortedCats,
+                    datasets: [{
+                        label: 'Crecimiento YoY (%)',
+                        data: sortedCats.map(c => growth[c].toFixed(1)),
+                        backgroundColor: sortedCats.map(c => growth[c] >= 0 ? '#4A7C4E' : '#C45C3E'),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    indexAxis: 'y',
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `${ctx.raw}%`
+                            }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { callback: v => v + '%' },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        y: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        function updateHeatmap() {
+            const table = document.getElementById('heatmapTable');
+
+            // Calculate averages per category
+            const catAvg = {};
+            categories.forEach(cat => {
+                const sales = rawData.filter(d => d.category === cat).map(d => d.sales);
+                catAvg[cat] = sales.reduce((s, v) => s + v, 0) / sales.length;
+            });
+
+            // Calculate index per month
+            const heatData = {};
+            categories.forEach(cat => {
+                heatData[cat] = {};
+                for (let m = 1; m <= 12; m++) {
+                    const monthSales = rawData.filter(d => d.category === cat && d.month === m);
+                    const avgMonth = monthSales.reduce((s, d) => s + d.sales, 0) / monthSales.length;
+                    heatData[cat][m] = Math.round((avgMonth / catAvg[cat]) * 100);
+                }
+            });
+
+            let html = '<thead><tr><th>Categoría</th>';
+            monthNames.forEach(m => html += `<th>${m}</th>`);
+            html += '</tr></thead><tbody>';
+
+            categories.forEach(cat => {
+                html += `<tr><td>${cat}</td>`;
+                for (let m = 1; m <= 12; m++) {
+                    const idx = heatData[cat][m];
+                    const cls = getHeatClass(idx);
+                    html += `<td class="${cls}">${idx}</td>`;
+                }
+                html += '</tr>';
+            });
+
+            html += '</tbody>';
+            table.innerHTML = html;
+        }
+
+        function getHeatClass(value) {
+            if (value >= 130) return 'heat-very-high';
+            if (value >= 110) return 'heat-high';
+            if (value >= 100) return 'heat-medium-high';
+            if (value >= 95) return 'heat-medium';
+            if (value >= 90) return 'heat-medium-low';
+            if (value >= 80) return 'heat-low';
+            return 'heat-very-low';
+        }
+
+        function updateSeasonalityChart() {
+            const ctx = document.getElementById('seasonalityChart').getContext('2d');
+
+            if (seasonalityChart) seasonalityChart.destroy();
+
+            // Calculate overall monthly index
+            const monthlyAvgs = [];
+            const overallAvg = rawData.reduce((s, d) => s + d.sales, 0) / rawData.length;
+
+            for (let m = 1; m <= 12; m++) {
+                const monthData = rawData.filter(d => d.month === m);
+                const monthAvg = monthData.reduce((s, d) => s + d.sales, 0) / monthData.length;
+                monthlyAvgs.push(Math.round((monthAvg / overallAvg) * 100));
+            }
+
+            seasonalityChart = new Chart(ctx, {
+                type: 'bar',
+                data: {
+                    labels: monthNames,
+                    datasets: [{
+                        label: 'Índice de Estacionalidad',
+                        data: monthlyAvgs,
+                        backgroundColor: monthlyAvgs.map(v => v >= 100 ? '#4A7C4E' : '#C45C3E'),
+                        borderRadius: 8
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false },
+                        tooltip: {
+                            callbacks: {
+                                label: ctx => `Índice: ${ctx.raw} (Base 100)`
+                            }
+                        }
+                    },
+                    scales: {
+                        y: {
+                            beginAtZero: false,
+                            min: 70,
+                            max: 140,
+                            ticks: { callback: v => v },
+                            grid: { color: 'rgba(0,0,0,0.05)' }
+                        },
+                        x: { grid: { display: false } }
+                    }
+                }
+            });
+        }
+
+        // Initialize on load
+        window.onload = initDashboard;
+    </script>
+</body>
+</html>

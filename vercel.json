@@ -1,0 +1,7 @@
+{
+  "version": 2,
+  "name": "el-patron-dashboard",
+  "builds": [
+    { "src": "*.html", "use": "@vercel/static" }
+  ]
+}
